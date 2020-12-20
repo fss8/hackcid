@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/esri-leaflet@2.5.0/dist/esri-leaflet.js"
+    integrity="sha512-ucw7Grpc+iEQZa711gcjgMBnmd9qju1CICsRaryvX7HJklK0pGl/prxKvtHwpgm5ZHdvAil7YPxI1oWPOWK3UQ=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/@ngageoint/leaflet-geopackage@2.0.5/dist/leaflet-geopackage.min.js"></script>
+    <script src="Arquivosgeojson/malha.geojson"></script>
+    <script src="Arquivosgeojson/ciclo2.geojson"></script>
+    <script src="Arquivosgeojson/ciclo3.geojson"></script>
+    <script src="Arquivosgeojson/faixaazul.geojson"></script>
+    <script src="Arquivosgeojson/EstacoesBikePE.geojson"></script>
+    <script src="Arquivosgeojson/PrevRedeCicloMetropolitana.geojson"></script>
+    <script src="Arquivosgeojson/PrevRedeCicloComplementar.geojson"></script>
+    <title>Hacker Cidaddão - Equipe 9</title>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <style>
+        #mapid { height: 550px; width: 100%; border: solid 1px black;}
+        div.scrollmenu {
+        background-color: #333;
+        overflow: auto;
+        white-space: nowrap;
+        border:1px solid #c0c0c0;
+        display:block;
+        width:100%;
+        }
+
+        div.scrollmenu a {
+        display: inline-block;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        text-decoration: none;
+        margin-left:5%;
+        margin-right: 5%;
+        }
+
+        div.scrollmenu a:hover {
+        background-color: #777;
+        }
+    </style>
+    
+  </head>
+  <body>
+    <div class="scrollmenu">
+        <a href="home.html">Home</a>
+        <a href="#">Mapa2</a>
+        <a href="pag3.html">Mapa3</a>
+        <a href="pag4-1.html">Mapa4</a>
+        <a href="pag5.html">Mapa5</a>
+        <a href="#tools">Tools</a>  
+    </div>
+      
+    <h2>Ciclovias Recife</h2>
+    <table border="0" width="100%" padding-left="10" >
+        <tr>
+
+        <td width="70%" valign="top">
+            <div id="mapid"></div>
+
+        </td>
+
+        
+        <td width="30%" valign="top">
+            <div style="margin-left: 20px; ">
+                <h3>Descrição do Mapa</h3>
+                <p>Dois mapas base são utilizados, mostrando a região do Recife. Ao acessar o menu de camadas, pode-se alterar o mapa base, e selecionar rotas de ciclovias pra visualizar, sendo elas atualmente implantadas(Malha Cicloviária), ciclovias operacionais ou que estão no Plano Diretor Cicloviario(PDC). <br/> Também são mostradas, as estações BIKE PE. </p>
+            </div>
+            
+        </td>
+
+        </tr>
+    </table>
+    <script>
+
+        //var map = L.map('mapid').setView([-8.0525, -34.921], 13);
+
+        var map = L.map(document.getElementById('mapid'), {
+        center: [-8.0525, -34.921],
+        zoom: 13,
+        minZoom: 2,
+        maxZoom: 17
+        });
+
+        var baserelief = L.tileLayer('https://tile.opentopomap.org/{z}/{x}/{y}.png', {});
+        baserelief.addTo(map);
+        map.attributionControl.addAttribution('OpenTopoMap');
+
+        var mapa2 = L.esri.basemapLayer('Streets');
+
+        var trail = L.geoJSON(malha, {
+            color: '#0f0000',
+            weight: 3,
+            opacity: 1,
+            dashArray: '12 8 12',
+        });
+        trail.addTo(map);
+
+        var cic2 = L.geoJSON(ciclo2, {
+            color: '#0000ff',
+            weight: 3,
+            opacity: 1,
+            dashArray: '12 8 12',
+        });
+
+        var cic3 = L.geoJSON(ciclo3, {
+            color: '#00ffff',
+            weight: 2,
+            opacity: 0.45,
+        });
+
+        var faixbus = L.geoJSON(faixaazul, {
+            color: '#0000ff',
+            weight: 2,
+            opacity: 0.55,
+        });
+
+        var aimplementar = L.geoJSON(PrevRedeCicloMetropolitana, {
+            color: '#ffff00',
+            weight: 3,
+            opacity: 1,
+            dashArray: '12 8 12',
+        });
+
+        var aimplementar2 = L.geoJSON(PrevRedeCicloComplementar, {
+            color: '#964b00',
+            weight: 3,
+            opacity: 1,
+            dashArray: '12 8 12',
+        });
+
+        var muxiIconProperties = {
+        iconUrl: "img/bike2.png"
+        , iconSize: [25, 25]
+        };
+
+        var muxiIcon = L.icon(muxiIconProperties);
+
+        var bike = L.geoJSON(EstacoesBikePE, 
+                      {pointToLayer: function(feature, latlng){
+                          return L.marker(latlng, {icon: muxiIcon});
+                      },
+                      onEachFeature: function( feature, layer){
+                          var nomeest = feature.properties.Name;
+
+                          layer.bindPopup('Estação Bike PE: ' +
+                                         '<br/> ' + nomeest);
+                          layer.on('mouseover', function() {layer.openPopup();});
+                          layer.on('mouseout', function() {layer.closePopup();});
+                      }
+                     });
+
+	    bike.addTo(map);
+
+        var circle;
+
+        var itera = 0;
+
+        var coordDIV = document.createElement('div');
+        coordDIV.id = 'mapCoordDIV';
+        coordDIV.style.position = 'absolute';
+        coordDIV.style.bottom = '1px';
+        coordDIV.style.left = '150px';
+        coordDIV.style.zIndex = '900';
+        coordDIV.style.color = '#404040';
+        coordDIV.style.fontFamily = 'Georgia';
+        coordDIV.style.fontSize = '10pt';
+        coordDIV.style.backgroundColor = '#fff';
+        
+        document.getElementById('mapid').appendChild(coordDIV);
+
+        // Setup the event to capture and display mouse movements
+        map.on('mousemove', function(e){
+            var lat = e.latlng.lat.toFixed(3);
+            var lon = e.latlng.lng.toFixed(3);
+            document.getElementById('mapCoordDIV').innerHTML = lat + ' , ' + lon;
+        });
+
+        var baselayers = {
+            'Shared Relief': baserelief,
+            'Esri Streets': mapa2
+        };
+        var overlays = {
+            'Rede Cicloviária': trail,
+            'Ciclovias Operacionais': cic2,
+            'Rotas a implementar - PDC': aimplementar,
+            'Rotas a implementar - Complementar': aimplementar2,
+            'Estações BikePE': bike
+            //'Faixa Azul de ônibus': faixbus 
+        };
+        L.control.layers(baselayers, overlays).addTo(map);
+
+        // Add scalebar
+
+        var scale = L.control.scale()
+        scale.addTo(map)
+
+    </script>
+  </body>
+</html>

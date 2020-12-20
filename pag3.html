@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/esri-leaflet@2.5.0/dist/esri-leaflet.js"
+    integrity="sha512-ucw7Grpc+iEQZa711gcjgMBnmd9qju1CICsRaryvX7HJklK0pGl/prxKvtHwpgm5ZHdvAil7YPxI1oWPOWK3UQ=="
+    crossorigin=""></script>
+    <script src="Arquivosgeojson/malha.geojson"></script>
+    <script src="Arquivosgeojson/ciclo2.geojson"></script>
+    <script src="Arquivosgeojson/faixaazul.geojson"></script>
+    <script src="Arquivosgeojson/emp1real.geojson"></script>
+    <title>Hacker Cidaddão - Equipe 9</title>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <style>
+        #mapid { height: 550px; width: 100%; border: solid 1px black;}
+        div.scrollmenu {
+        background-color: #333;
+        overflow: auto;
+        white-space: nowrap;
+        border:1px solid #c0c0c0;
+        display:block;
+        width:100%;
+        }
+
+        div.scrollmenu a {
+        display: inline-block;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        text-decoration: none;
+        margin-left:5%;
+        margin-right: 5%;
+        }
+
+        div.scrollmenu a:hover {
+        background-color: #777;
+        }
+        .info {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+    </style>
+    
+  </head>
+  <body>
+    <div class="scrollmenu">
+        <a href="home.html" >Home</a>
+        <a href="pag2.html" >Mapa2</a>
+        <a href="#">Mapa3</a>
+        <a href="pag4-1.html">Mapa4</a>
+        <a href="pag5.html">Mapa5</a>
+        <a href="#tools">Tools</a>  
+    </div>
+      
+    <h2>Mapa - Empregos em 15 minutos a pé (900 metros)</h2>
+    <table border="0" width="100%" padding-left="10" >
+        <tr>
+
+        <td width="70%" valign="top">
+            <div id="mapid"></div>
+
+        </td>
+
+        
+        <td width="30%" valign="top">
+            <div style="margin-left: 20px; ">
+                <h3>Descrição do Mapa</h3>
+                <p>A região do recife é mostrada no mapa, e, clicando em uma região dentro da cidade ou usando a localização do navegador, será mostrado a quantidade de empresas abertas dentro de um raio de 900 metros daquele ponto específico. <br/> Esse raio, representa o tempo comum de caminhada de 15 minutos. A sua área, 'a cidade de 15 minutos'. <br/> Acessando o menu de camadas é possível visualizar quais seções da malha cicloviária contemplam essa região de "15 minutos". </p>
+            </div>
+            
+        </td>
+
+        </tr>
+    </table>
+    <script>
+
+
+//        var map = L.map('mapid').setView([-8.0525, -34.921], 13);
+
+  //      L.esri.basemapLayer('Streets').addTo(map);
+
+        var map = L.map(document.getElementById('mapid'), {
+            center: [-8.0525, -34.921],
+            zoom: 13,
+            minZoom: 2,
+            maxZoom: 17
+        });
+
+        //L.esri.basemapLayer('Streets').addTo(map);
+        var baserelief = L.tileLayer('https://tile.opentopomap.org/{z}/{x}/{y}.png', {});
+        //L.esri.basemapLayer('Streets').addTo(map);
+        baserelief.addTo(map);
+
+        var trail = L.geoJSON(malha, {
+            color: '#0f0000',
+            weight: 3,
+            opacity: 1,
+            dashArray: '12 8 12',
+        });
+        trail.addTo(map);
+
+        var cic2 = L.geoJSON(ciclo2, {
+            color: '#0000ff',
+            weight: 3,
+            opacity: 1,
+            dashArray: '12 8 12',
+        });
+
+        var faixbus = L.geoJSON(faixaazul, {
+            color: '#0000ff',
+            weight: 2,
+            opacity: 0.55,
+        });
+
+        var coordDIV = document.createElement('div');
+        coordDIV.id = 'mapCoordDIV';
+        coordDIV.style.position = 'absolute';
+        coordDIV.style.bottom = '1px';
+        coordDIV.style.left = '150px';
+        coordDIV.style.zIndex = '900';
+        coordDIV.style.color = '#404040';
+        coordDIV.style.fontFamily = 'Georgia';
+        coordDIV.style.fontSize = '10pt';
+        coordDIV.style.backgroundColor = '#fff';
+        
+        document.getElementById('mapid').appendChild(coordDIV);
+
+        // Setup the event to capture and display mouse movements
+        map.on('mousemove', function(e){
+            var lat = e.latlng.lat.toFixed(3);
+            var lon = e.latlng.lng.toFixed(3);
+            document.getElementById('mapCoordDIV').innerHTML = lat + ' , ' + lon;
+        });
+        
+        var circle;
+        var sualocal;
+
+        var clicado = 0;
+
+        //console.log(sualocal);
+
+        map.on('click', function(e){
+            var lat = e.latlng.lat
+            var lon = e.latlng.lng
+            //console.log(lat + ' ' + lon);
+
+            if(clicado == 0){
+                clicado = 1;
+                sualocal = L.marker([lat, lon], 
+                    {title: 'Titulo da sua posição'});
+                sualocal.bindPopup("Aqui está sua localização<br> Seja Bem vindo");
+                sualocal.addTo(map);
+                sualocal.openPopup();
+                
+                circle = L.circle([lat, lon], {
+                color: 'red',
+                    fillColor: '#f03',
+                    fillOpacity: 0.35,
+                    radius: 900,
+                    opacity: 0.05
+                }).addTo(map);
+                //CalculaEmpresas();
+                var result = CalculaEmpresas();
+                info.update(result);
+
+            }else{
+                sualocal._latlng.lat = lat
+                sualocal._latlng.lng = lon
+                circle._latlng.lat = lat;
+                circle._latlng.lng = lon;
+                //console.log(sualocal);
+                circle._reset(); 
+                sualocal.update();
+                //CalculaEmpresas();
+                var result = CalculaEmpresas();
+                info.update(result);
+            }
+            //circle._renderer._events.update();
+            //map.fitBounds(circle.getBounds());
+        });
+
+        var emp = L.geoJSON(emp1real, 
+                      {pointToLayer: function(feature, latlng){
+                          return L.circle(latlng, {radius: 0.0000000001});
+                      }
+                     });
+
+
+        var itera = 0;
+        
+        if('geolocation' in navigator){
+            navigator.geolocation.getCurrentPosition(function(position) {
+                var lat = position.coords.latitude
+                var lon = position.coords.longitude
+                //console.log(position);
+                if(clicado == 0){
+                    clicado = 1;
+                    sualocal = L.marker([lat, lon], 
+                        {title: 'Titulo da sua posição'});
+                    sualocal.bindPopup("Aqui está sua localização<br> Seja Bem vindo");
+                    sualocal.addTo(map);
+                    sualocal.openPopup();
+                    
+                    circle = L.circle([lat, lon], {
+                    color: 'red',
+                        fillColor: '#f03',
+                        fillOpacity: 0.35,
+                        radius: 900,
+                        opacity: 0.05
+                    }).addTo(map);
+                    //CalculaEmpresas();
+                    var result = CalculaEmpresas();
+                    info.update(result);
+
+                }else{
+                    sualocal._latlng.lat = lat
+                    sualocal._latlng.lng = lon
+                    circle._latlng.lat = lat;
+                    circle._latlng.lng = lon;
+                    //console.log(sualocal);
+                    sualocal.closePopup();
+                    circle._reset(); 
+                    sualocal.update();
+                    //CalculaEmpresas();
+                    var result = CalculaEmpresas();
+                    info.update(result);
+                }
+            }, function(error){
+                console.log(error)
+            }, {enableHighAccuracy: true, maximumAge:10000, timeout:30000})
+        }else{
+            alert('Não foi possivel obter a localização')
+        }
+
+        function CalculaEmpresas(){
+            itera = 0;
+            var i = emp._leaflet_id-1
+            while (i < 99370) {
+                if(i==emp._leaflet_id){
+                    //console.log('MesmoID');
+                }else if(emp._layers[i] == undefined){
+                    //console.log(emp._layers[i-1]._leaflet_id);
+                    //console.log(itera);
+                    //break;
+                }else{
+                    //Qual bairro pertence:
+                var pontos = emp._layers[i]._latlng.clone();
+                    if(circle._latlng.distanceTo(pontos) <= 900){
+                        itera++;      
+                    }else{
+                        //console.log('Não contém');
+                    }                    
+                }
+                i++;
+            }
+            return itera;
+        }
+
+        var info = L.control();
+        info.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        info.update = function (valor) {
+            this._div.innerHTML = '<h4>Empresas em um raio de 15 minutos(a pé)</h4>' + ((clicado!=0) ? '' + 
+                (valor > 0 ? '<b>' + 'Número de empresas: ' + valor + '</b><br />'  + '</sup>' 
+                : 'Não foi encontrado nenhuma empresa nessa região' )
+                : 'Clique em uma região do recife');
+        };
+
+        info.addTo(map);
+
+        var baselayers = {
+        };
+        var overlays = {
+            'Rede cicloviária': trail,
+            'Ciclovias operacionais': cic2,
+            'Empresas(arquivo grande)': emp 
+        };
+        L.control.layers(baselayers, overlays).addTo(map);
+
+        // Add scalebar
+
+        var scale = L.control.scale()
+        scale.addTo(map)
+
+        // Add attribution
+        map.attributionControl.addAttribution('OpenTopoMap');
+
+    </script>
+  </body>
+</html>

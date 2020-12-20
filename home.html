@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/esri-leaflet@2.5.0/dist/esri-leaflet.js"
+    integrity="sha512-ucw7Grpc+iEQZa711gcjgMBnmd9qju1CICsRaryvX7HJklK0pGl/prxKvtHwpgm5ZHdvAil7YPxI1oWPOWK3UQ=="
+    crossorigin=""></script>
+    <script src="Arquivosgeojson/malha.geojson"></script>
+    <script src="Arquivosgeojson/dek1.geojson"></script>
+
+    <title>Hacker Cidadão - Equipe 9</title>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        #mapid { height: 550px; width: 100%; border: solid 1px black;}
+        .info {
+            padding: 6px 8px;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+        .info h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+        div.scrollmenu {
+        background-color: #333;
+        overflow: auto;
+        white-space: nowrap;
+        border:1px solid #c0c0c0;
+        display:block;
+        width:100%;
+        }
+
+        div.scrollmenu a {
+        display: inline-block;
+        color: white;
+        text-align: center;
+        padding: 15px;
+        text-decoration: none;
+        margin-left:5%;
+        margin-right: 5%;
+        }
+
+        div.scrollmenu a:hover {
+        background-color: #777;
+        }
+        .legend {
+            line-height: 18px;
+            color: #555;
+        }
+        .legend i {
+            width: 18px;
+            height: 18px;
+            float: left;
+            margin-right: 8px;
+            opacity: 0.7;
+        }
+    </style>
+    
+  </head>
+  <body>
+    <div class="scrollmenu">
+        <a href="#">Home</a>
+        <a href="pag2.html" >Mapa2</a>
+        <a href="pag3.html">Mapa3</a>
+        <a href="pag4-1.html">Mapa4</a>
+        <a href="pag5.html">Mapa5</a>
+        <a href="#tools">Tools</a>  
+    </div>
+      
+    <h2>Número de empresas abertas por bairro </h2>
+    <table border="0" width="100%" padding-left="10" >
+        <tr>
+
+        <td width="70%" valign="top">
+            <div id="mapid"></div>
+
+        </td>
+
+        
+        <td width="30%" valign="top">
+            <div style="margin-left: 20px; ">
+                <h3>Descrição do Mapa</h3>
+                <p>Ao passar sobre um bairro do Recife, serão exibidos dados referentes ao nome do bairro, extensão territorial em km<sup>2</sup>, quantidade de empresas no bairro, e densidade de empresas por km<sup>2</sup>. <br/> As cores representam uma escala, que é determinada pelo número de empresas no bairro. </p>
+            </div>
+            
+        </td>
+
+        </tr>
+    </table>
+    <script>
+        var map = L.map(document.getElementById('mapid'), {
+        center: [-8.0525, -34.921],
+        zoom: 13
+        });
+        
+        var cartodbAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution">CARTO</a>';
+
+        var positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+            attribution: cartodbAttribution
+        }).addTo(map);
+        
+        var bairro = L.geoJSON(dek1, {
+            style: style,
+            onEachFeature: onEachFeature
+        });
+
+        function getColor(d) {
+            return d > 1000 ? '#800026' :
+                d > 500  ? '#BD0026' :
+                d > 200  ? '#E31A1C' :
+                d > 100  ? '#FC4E2A' :
+                d > 50   ? '#FD8D3C' :
+                d > 20   ? '#FEB24C' :
+                d > 10   ? '#FED976' :
+                            '#FFEDA0';
+        }
+
+        function style(feature) {
+            return {
+                fillColor: getColor(feature.properties.NUMPOINTS),
+                weight: 2,
+                opacity: 0.5,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.5
+            };
+        }
+
+        function highlightFeature(e) {
+            var layer = e.target;
+            
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 0.7
+            });
+
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+
+            info.update(layer.feature.properties);
+        }
+
+        function resetHighlight(e) {
+            bairro.resetStyle(e.target);
+            info.update();
+        }
+
+        function zoomToFeature(e) {
+            map.fitBounds(e.target.getBounds());
+        }
+
+        function onEachFeature(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature,
+                mouseout: resetHighlight,
+                click: zoomToFeature
+            });
+            //console.log(layer);
+        }
+        
+        bairro.addTo(map);
+        
+        var info = L.control();
+        info.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+
+        info.update = function (props) {
+            this._div.innerHTML = '<h4>Densidade de Empresas por bairro no recife</h4>' +  (props ?
+                '<b>' + props.EBAIRRNO_1 + '</b><br />' + props.Areakm2 + ' km<sup>2</sup> : ' + props.NUMPOINTS + 
+                ' Empresas,  <br/> Densidade de empresas: ' + props.DENS_EMPKM.toLocaleString('pt-BR') + ' por km<sup>2</sup>' 
+                : 'Selecione um bairro');
+        };
+
+        //emp.addTo(map);
+        info.addTo(map);
+
+        var legend = L.control({position: 'bottomright'});
+
+        legend.onAdd = function (map) {
+
+            var div = L.DomUtil.create('div', 'info legend'),
+                grades = [0, 10, 20, 50, 100, 200, 500, 1000],
+                labels = [];
+
+            // loop through our density intervals and generate a label with a colored square for each interval
+            for (var i = 0; i < grades.length; i++) {
+                div.innerHTML +=
+                    '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                    grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+            }
+
+            return div;
+        };
+
+        legend.addTo(map);
+
+    </script>
+  </body>
+</html>
