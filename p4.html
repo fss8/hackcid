@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/esri-leaflet@2.5.0/dist/esri-leaflet.js"
+    integrity="sha512-ucw7Grpc+iEQZa711gcjgMBnmd9qju1CICsRaryvX7HJklK0pGl/prxKvtHwpgm5ZHdvAil7YPxI1oWPOWK3UQ=="
+    crossorigin=""></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    
+    <script src="arquivos/zonas.geojson"></script>
+    <link rel="stylesheet" href="codigo/stylemapas.css" >
+    <!--[if IE]>
+    <script type="text/javascript" src="lib/jszip-utils-ie.js"></script>
+    <![endif]-->
+
+    <title>Hacker Cidaddão - Equipe 9</title>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <style>
+        .caixa {
+            border-width:1px;
+            border-style:solid;
+            background-color: #d2d4da;
+            -webkit-border-radius: 20px 0 20px 20px;
+            border-radius: 20px 0 20px 20px;
+            padding: 0.1% 0.1% 0.1% 0.1%;
+            padding-top: 0px;
+            /*background-image: -webkit-linear-gradient(top, #d2d4da, #200B66);
+            background-image:         linear-gradient(to bottom, #d2d4da, #200B66);*/
+            /*opacity: 0.8;*/
+            
+        }
+        .caixinha {
+            /*text-align: center;*/
+            border-width:1px;
+            border-style:double;
+            background-color: #95e6ff;
+            -webkit-border-radius: 20px 0 20px 20px;
+            border-radius: 20px 0 20px 20px;
+            margin: 0.04% 0.02% 0.01% 0.02%;
+            opacity: 1;
+            background-image: -webkit-linear-gradient(top, #95e6ff, #200B66); /* Chrome 10-25, iOS 5+, Safari 5.1+ */
+            background-image:         linear-gradient(to bottom, #95e6ff, #200B66); /* Chrome 26, Firefox 16+, IE 10+, Opera */
+        }
+        .texto {
+            height: 1.7vw;
+            font-size: 1.7vw;
+            font-style: normal;
+            /*font: 1.7vw normal, Helvetica;*/
+            font-weight: bold;
+            color: rgb(48, 6, 6);
+            /*box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            margin-bottom: 0px;
+            padding-top: 0px;*/
+            padding-top: 0.3%;
+            padding-bottom: 0.3%;
+            padding-left: 2%;
+
+        }
+        .textopequeno {
+            font-size: 11px;
+            color: rgb(48, 6, 6);
+            /*box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            margin-bottom: 0px;
+            padding-top: 0px;*/
+            padding-top: 0.3%;
+            padding-bottom: 1%;
+            padding-left: 2%;
+
+        }
+        .descricao {
+            height:40vw;
+            font-size: 14.4px;
+            /*box-shadow: 0 0 0 0;*/
+            background-color: rgba(247, 247, 247, 0.911);
+            /*margin-bottom: 0px;
+            height: 100%;*/
+            border-color: rgba(12, 147, 189, 0.877);
+            border-width: 2px;
+            border-style: solid;
+            padding-top: 0px;
+            /*border-bottom: px;*/
+            height: 546px;
+            border-bottom-right-radius: 20px;
+        }
+        .botao {
+            padding: 3% 4%;
+            height: 30%;
+            width: 100%;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(4, 0, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 11px;
+            /*line-height: 120%;
+            width: 40%;
+            color: #555;*/
+        }
+        .botao h4 {
+            margin: 0 0 5px;
+            color: rgb(255, 217, 0);
+        }
+    </style>
+    
+  </head>
+  <body>
+    <!--<div class="scrollmenu">
+        <a href="home.html" id="tile1">Home</a>
+        <a href="pag2.html" id="tile2">Mapa2</a>
+        <a href="pag3.html">Mapa3</a>
+        <a href="#">Mapa4</a>
+        <a href="pag5.html">Mapa5</a>
+        <a href="#tools">Tools</a>  
+    </div>-->
+    
+    <div class="caixa">
+        <div class="texto">
+            Visualização dos resultados da pesquisa Origem Destino de 2018. Viagens por modo bicicleta por motivo trabalho.
+        </div>
+        <div class="caixinha">
+            
+            <table width="100%" padding-left="10" >
+                <tr>
+        
+                <td width="70%">
+                    <div id="mapid"></div>
+        
+                </td>
+        
+                
+                <td width="30%" >
+                    <div class="descricao">
+                        <div style="margin-left: 20px; margin-right: 10px;">
+                            <h3>Descrição do Mapa</h3>
+                            <p>Clique em uma zona de tráfego para selecioná-la e exibir o número de viagens entre ela e as demais zonas de tráfego. Quanto mais escura, maior é o número de viagens que ocorre atualmente neste par origem-destino, por modo bicicleta, motivo trabalho (2018). <br/> Também é possível verificar qual rota cicloviária contempla essas zonas, no menu de camadas do mapa. </p>
+                            <h5>Modo Origem:</h5><p>A zona clicada será a de origem, e sobrepondo o cursor do mouse sobre outra zona, será mostrado a quantidade de deslocamentos nesse par Origem-Destino.</p>
+                            <h5>Modo Destino:</h5>
+                            <p>A zona clicada será a de destino, e sobrepondo o cursor do mouse sobre outra zona, será mostrado a quantidade de deslocamentos nesse par Origem-Destino.</p>
+                            <h3>Dados abertos:</h3>
+                            <a target="_blank" href="http://dados.recife.pe.gov.br/dataset/pesquisa-origemdestino-metropolitana-2018">http://dados.recife.pe.gov.br/dataset/pesquisa-origemdestino-metropolitana-2018</a>
+                        </div>
+                    </div>
+                    
+                </td>
+        
+                </tr>
+            </table>
+        </div>    
+    </div>
+
+    <!--<p>Resize the browser window to see the effect.</p>-->
+    <script src="codigo/p4.js"></script>
+  </body>
+</html>

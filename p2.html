@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/esri-leaflet@2.5.0/dist/esri-leaflet.js"
+    integrity="sha512-ucw7Grpc+iEQZa711gcjgMBnmd9qju1CICsRaryvX7HJklK0pGl/prxKvtHwpgm5ZHdvAil7YPxI1oWPOWK3UQ=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/@ngageoint/leaflet-geopackage@2.0.5/dist/leaflet-geopackage.min.js"></script>
+    <!--<script src="Arquivosgeojson/ciclo3.geojson"></script>
+    <script src="Arquivosgeojson/PrevRedeCicloMetropolitana.geojson"></script>
+    <script src="Arquivosgeojson/PrevRedeCicloComplementar.geojson"></script>-->
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <link rel="stylesheet" href="dist/MarkerCluster.css">
+    <link rel="stylesheet" href="dist/MarkerCluster.Default.css">
+    <script src="dist/leaflet.markercluster-src.js"></script>
+
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="dist/spin.css" >
+    <script src="dist/spin.min.js"></script>
+    <script src="dist/leaflet.spin.min.js"></script>
+
+    <link rel="stylesheet" href="codigo/stylemapas.css" >
+
+    <title>Hacker Cidadão - Equipe 9</title>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <style>
+        .botao {
+            padding: 3% 4%;
+            height: 30%;
+            width: 100%;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(255,255,255,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 11px;
+            /*line-height: 120%;
+            width: 40%;
+            color: #555;*/
+        }
+        .botao h4 {
+            margin: 0 0 5px;
+            color: #777;
+        }
+        .botao i {
+            width: 22%;
+            height: 15px;
+            float: left;
+            margin-right: 5%;
+            opacity: 0.7;
+        }
+        .caixa {
+            border-width:1px;
+            border-style:solid;
+            background-color: #d2d4da;
+            -webkit-border-radius: 20px 0 20px 20px;
+            border-radius: 20px 0 20px 20px;
+            padding: 0.1% 0.1% 0.1% 0.1%;
+            padding-top: 0px;
+            /*background-image: -webkit-linear-gradient(top, #d2d4da, #200B66);
+            background-image:         linear-gradient(to bottom, #d2d4da, #200B66);*/
+            /*opacity: 0.8;*/
+            
+        }
+        .caixinha {
+            /*text-align: center;*/
+            border-width:1px;
+            border-style:double;
+            background-color: #f8eec0;
+            -webkit-border-radius: 20px 0 20px 20px;
+            border-radius: 20px 0 20px 20px;
+            margin: 0.04% 0.02% 0.01% 0.02%;
+            opacity: 1;
+            background-image: -webkit-linear-gradient(top, #f8eec0, #fbff00); /* Chrome 10-25, iOS 5+, Safari 5.1+ */
+            background-image:         linear-gradient(to bottom, #f8eec0, #ffe600); /* Chrome 26, Firefox 16+, IE 10+, Opera */
+        }
+        .texto {
+            height: 1.7vw;
+            font-size: 1.7vw;
+            font-style: normal;
+            /*box-shadow: 0 0 0 0;
+            
+            font: 1.7vw normal, Helvetica;*/
+            font-weight: bold;
+            color: rgb(48, 6, 6);
+            /*box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            margin-bottom: 0px;
+            padding-top: 0px;*/
+            padding-top: 0.3%;
+            padding-bottom: 0.3%;
+            padding-left: 2%;
+
+        }
+        .descricao {
+            height:40vw;
+            font-size: 15px;
+            /*font-size: 1.2vw;*/
+            /*box-shadow: 0 0 0 0;*/
+            background-color: rgba(247, 247, 247, 0.911);
+            /*margin-bottom: 0px;
+            height: 100%;*/
+            border-color: rgba(189, 112, 12, 0.877);
+            border-width: 2px;
+            border-style: solid;
+            padding-top: 0px;
+            /*border-bottom: px;*/
+            height: 546px;
+            border-bottom-right-radius: 20px;
+        }
+    </style>
+    
+  </head>
+  <body>
+    <!--<div class="scrollmenu">
+        <a href="home.html">Home</a>
+        <a href="#">Mapa2</a>
+        <a href="pag3.html">Mapa3</a>
+        <a href="pag4-1.html">Mapa4</a>
+        <a href="pag5.html">Mapa5</a>
+        <a href="#tools">Tools</a>  
+    </div>-->
+      
+    <div class="caixa">
+        <div class="texto">
+            Ciclovias Recife e Estações Bike PE.
+        </div>
+        <div class="caixinha">
+            
+            <table width="100%" padding-left="10" >
+                <tr>
+        
+                <td width="70%">
+                    <div id="mapid">
+                    </div>
+                    
+                </td>
+        
+                
+                <td width="30%" >
+                    <div class="descricao">
+                        <div style="margin-left: 20px; margin-right: 10px;">
+                            <h3>Descrição do Mapa</h3>
+                            <p>Ao acessar o menu de camadas (botão no canto superior direito do mapa, com os losangos empilhados), você pode escolher entre dois mapas base (ou seja, os mapas de fundo) e também selecionar quais rotas de ciclovias deseja visualizar: as ciclovias atualmente implantadas no Recife (Malha Cicloviária) e as ciclovias operacionais (aquelas que funcionam em horários restritos - domingo e feriados).<br/> Você também pode visualizar onde estão as estações BIKE PE(marcadas no mapa), de aluguel de bicicleta, e os dados sobre elas (identificação, localização, capacidade). </p>
+                            <h3>Dados abertos:</h3>
+                            <a target="_blank" href="http://dados.recife.pe.gov.br/dataset/malha-cicloviaria-do-recife">http://dados.recife.pe.gov.br/dataset/malha-cicloviaria-do-recife</a>
+                            <br/>
+                            <a target="_blank" href="http://dados.recife.pe.gov.br/dataset/ciclovias-ciclofaixas-estacoes-de-aluguel-de-bikes-e-rotas">http://dados.recife.pe.gov.br/dataset/ciclovias-ciclofaixas-estacoes-de-aluguel-de-bikes-e-rotas</a>
+                        </div>
+                    </div>
+                    
+                </td>
+        
+                </tr>
+            </table>
+        </div>    
+    </div>
+
+    <script src="codigo/p2.js"></script>
+  </body>
+</html>

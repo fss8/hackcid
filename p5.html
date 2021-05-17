@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+    <script src="https://unpkg.com/esri-leaflet@2.5.0/dist/esri-leaflet.js"
+    integrity="sha512-ucw7Grpc+iEQZa711gcjgMBnmd9qju1CICsRaryvX7HJklK0pGl/prxKvtHwpgm5ZHdvAil7YPxI1oWPOWK3UQ=="
+    crossorigin=""></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script src="arquivos/zonas.geojson"></script>
+    <link rel="stylesheet" href="codigo/stylemapas.css" >
+    
+    <title>Hacker Cidadão - Equipe 9</title>
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <style>
+        .caixa {
+            border-width:1px;
+            border-style:solid;
+            background-color: #d2d4da;
+            -webkit-border-radius: 20px 0 20px 20px;
+            border-radius: 20px 0 20px 20px;
+            padding: 0.1% 0.1% 0.1% 0.1%;
+            padding-top: 0px;
+            /*background-image: -webkit-linear-gradient(top, #d2d4da, #200B66);
+            background-image:         linear-gradient(to bottom, #d2d4da, #200B66);*/
+            /*opacity: 0.8;*/
+            
+        }
+        .caixinha {
+            /*text-align: center;*/
+            border-width:1px;
+            border-style:double;
+            background-color: #95e6ff;
+            -webkit-border-radius: 20px 0 20px 20px;
+            border-radius: 20px 0 20px 20px;
+            margin: 0.04% 0.02% 0.01% 0.02%;
+            opacity: 1;
+            background-image: -webkit-linear-gradient(top, #f8b0b0, #ff0000); /* Chrome 10-25, iOS 5+, Safari 5.1+ */
+            background-image:         linear-gradient(to bottom, #f8b0b0, #ff0000); /* Chrome 26, Firefox 16+, IE 10+, Opera */
+        }
+        .texto {
+            height: 1.7vw;
+            font-size: 1.7vw;
+            font-style: normal;
+            /*box-shadow: 0 0 0 0;
+            
+            font: 1.7vw normal, Helvetica;*/
+            font-weight: bold;
+            color: rgb(48, 6, 6);
+            /*box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            margin-bottom: 0px;
+            padding-top: 0px;*/
+            padding-top: 0.3%;
+            padding-bottom: 0.3%;
+            padding-left: 2%;
+
+        }
+        .textopequeno {
+            font-size: 11px;
+            color: rgb(48, 6, 6);
+            /*box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            margin-bottom: 0px;
+            padding-top: 0px;*/
+            padding-top: 0.3%;
+            padding-bottom: 1%;
+            padding-left: 2%;
+
+        }
+        .descricao {
+            height:40vw;
+            font-size: 15px;
+            /*box-shadow: 0 0 0 0;*/
+            background-color: rgba(247, 247, 247, 0.911);
+            /*margin-bottom: 0px;
+            height: 100%;*/
+            border-color: rgba(12, 147, 189, 0.877);
+            border-width: 2px;
+            border-style: solid;
+            padding-top: 0px;
+            /*border-bottom: px;*/
+            height: 546px;
+            border-bottom-right-radius: 20px;
+        }
+    </style>
+    
+  </head>
+  <body>
+    <!--<div class="scrollmenu">
+        <a href="home.html" id="tile1">Home</a>
+        <a href="pag2.html" id="tile2">Mapa2</a>
+        <a href="pag3.html">Mapa3</a>
+        <a href="pag4-1.html">Mapa4</a>
+        <a href="#">Mapa5</a>
+        <a href="#tools">Tools</a>  
+    </div>-->
+
+    <div class="caixa">
+        <div class="texto">
+            Zonas de tráfego com maiores deslocamentos, bicicleta, motivo trabalho (Pesquisa OD 2018).
+        </div>
+        <div class="caixinha">
+            
+            <table width="100%" padding-left="10" >
+                <tr>
+        
+                <td width="70%">
+                    <div id="mapid"></div>
+        
+                </td>
+        
+                
+                <td width="30%" >
+                    <div class="descricao">
+                        <div style="margin-left: 20px; margin-right: 10px;">
+                            <h3>Descrição do Mapa</h3>
+                            <p> Este mapa também está seccionado em zonas de tráfego, que são mostradas em uma escala de cores: quanto mais escuro o tom de vermelho, maior é o número de deslocamentos de bicicleta, com motivo trabalho, que se originam em tal zona. 
+                                Ao passar o cursor sobre uma zona de tráfego, será exibida a quantidade total de viagens (modo bicicleta, motivo trabalho) ali originadas, com destino para as demais zonas (dados da Pesquisa OD de 2018).
+                                Também é possível visualizar as rotas cicloviárias que contemplam estas zonas de tráfego, acessando o menu de camadas do mapa (botão no canto superior direito do mapa).</p>
+                            <h3>Dados abertos:</h3>
+                            <a target="_blank" href="http://dados.recife.pe.gov.br/dataset/pesquisa-origemdestino-metropolitana-2018">http://dados.recife.pe.gov.br/dataset/pesquisa-origemdestino-metropolitana-2018</a>
+                        </div>
+                    </div>
+                    
+                </td>
+        
+                </tr>
+            </table>
+        </div>    
+    </div>
+    
+    <!--<p>Resize the browser window to see the effect.</p>-->
+    <script src="codigo/p5.js"></script>
+  </body>
+</html>
