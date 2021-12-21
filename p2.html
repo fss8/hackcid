@@ -68,6 +68,9 @@
             /*background-image: -webkit-linear-gradient(top, #d2d4da, #200B66);
             background-image:         linear-gradient(to bottom, #d2d4da, #200B66);*/
             /*opacity: 0.8;*/
+            width: 100%;
+            display: flex;
+		    flex-direction: column;
             
         }
         .caixinha {
@@ -81,6 +84,11 @@
             opacity: 1;
             background-image: -webkit-linear-gradient(top, #f8eec0, #fbff00); /* Chrome 10-25, iOS 5+, Safari 5.1+ */
             background-image:         linear-gradient(to bottom, #f8eec0, #ffe600); /* Chrome 26, Firefox 16+, IE 10+, Opera */
+            /*========>>>>>Inserido <<<<<==========*/
+            float: left;
+		    display: flex;
+		    flex-direction: column;
+		    background-size: 100% auto;
         }
         .texto {
             height: 1.7vw;
@@ -98,10 +106,16 @@
             padding-bottom: 0.3%;
             padding-left: 2%;
 
+            /*========>>>>>Inserido <<<<<==========*/
+            float: left;
+            display: flex;
+            flex-direction: column;
+            background-size: 100% auto;
+
         }
         .descricao {
             height:40vw;
-            font-size: 15px;
+            font-size: clamp(0.5em, 0.5em + 0.5vw, 1.2em);
             /*font-size: 1.2vw;*/
             /*box-shadow: 0 0 0 0;*/
             background-color: rgba(247, 247, 247, 0.911);
@@ -114,6 +128,12 @@
             /*border-bottom: px;*/
             height: 546px;
             border-bottom-right-radius: 20px;
+
+            /*========>>>>>Inserido <<<<<==========*/
+            float: left;
+            display: flex;
+            flex-direction: column;
+            background-size: 100% auto;
         }
     </style>
     

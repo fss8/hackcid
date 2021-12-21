@@ -38,7 +38,10 @@
             /*background-image: -webkit-linear-gradient(top, #d2d4da, #200B66);
             background-image:         linear-gradient(to bottom, #d2d4da, #200B66);*/
             /*opacity: 0.8;*/
-            
+
+            width: 100%;
+            display: flex;
+		    flex-direction: column;
         }
         .caixinha {
             /*text-align: center;*/
@@ -51,6 +54,12 @@
             opacity: 1;
             background-image: -webkit-linear-gradient(top, #c7ffb0, #69a821); /* Chrome 10-25, iOS 5+, Safari 5.1+ */
             background-image:         linear-gradient(to bottom, #c7ffb0, #69a821); /* Chrome 26, Firefox 16+, IE 10+, Opera */
+            
+            /*========>>>>>Inserido <<<<<==========*/
+            float: left;
+            display: flex;
+            flex-direction: column;
+            background-size: 100% auto;
         }
         .texto {
             height: 1.7vw;
@@ -68,10 +77,16 @@
             padding-bottom: 0.3%;
             padding-left: 2%;
 
+            /*========>>>>>Inserido <<<<<==========*/
+            float: left;
+            display: flex;
+            flex-direction: column;
+            background-size: 100% auto;
+
         }
         .descricao {
             height:40vw;
-            font-size: 14.5px;
+            font-size: clamp(0.5em, 0.5em + 0.5vw, 1.2em);
             /*box-shadow: 0 0 0 0;*/
             background-color: rgba(247, 247, 247, 0.911);
             /*margin-bottom: 0px;
@@ -83,6 +98,12 @@
             /*border-bottom: px;*/
             height: 546px;
             border-bottom-right-radius: 20px;
+
+            /*========>>>>>Inserido <<<<<==========*/
+            float: left;
+            display: flex;
+            flex-direction: column;
+            background-size: 100% auto;
         }
         .botao {
             padding: 3% 4%;
@@ -108,7 +129,7 @@
 
     <div class="caixa">
         <div class="texto">
-            Mapa - Empregos em 15 minutos a pé (900 metros), ou por bicicleta (5000 metros).
+            Mapa - Empregos em 15 minutos a pé (900 metros), ou por bicicleta (4 km).
         </div>
         <div class="caixinha">
             
@@ -126,7 +147,7 @@
                         <div style="margin-left: 20px; margin-right: 10px;">
                             <h3>Descrição do Mapa</h3>
                             <p>Este mapa mostra a quantidade de empresas abertas na cidade do Recife e calcula quantas empresas existem dentro de um raio de 15 minutos, a partir de um ponto específico. Este ponto pode ser definido por você clicando no mapa.
-                                Esse raio de 900m ou 5km representa a área alcançada no tempo médio de uma caminhada/corrida de 15 minutos a pé ou de bicicleta(considerando velocidade média de 3,6km/h e 20km/h respectivamente). Clicar no botão "Selecionar Modo _" irá alterar o tamanho do raio. <br/>No conceito de cidade de 15 minutos, as pessoas deveriam ter acesso a oportunidades de trabalho neste período de tempo.
+                                Esse raio de 900m ou 4km representa a área alcançada no tempo médio de uma caminhada/corrida de 15 minutos a pé ou de bicicleta(considerando velocidade média de 3,6km/h e 16km/h respectivamente). Clicar no botão "Selecionar Modo _" irá alterar o tamanho do raio. <br/>No conceito de cidade de 15 minutos, as pessoas deveriam ter acesso a oportunidades de trabalho neste período de tempo.
                                 Acessando o menu de camadas é possível visualizar quais seções da malha cicloviária contemplam essa região de 15 minutos.
                                 <br/><b>Observação:</b> Somente foram marcadas no mapa, as empresas que possuem os dados georreferenciados na base de dados da Prefeitura de Recife.</p>
                             <h3>Dados abertos:</h3>

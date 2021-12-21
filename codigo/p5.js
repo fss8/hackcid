@@ -2,8 +2,25 @@
 
         var trail, cic2;
 
-        var ODBike = new Array();
-        var tamanhoodbike = 0;
+        var ODBiketrab = new Array();
+        var ODPetrab = new Array();
+        var ODBikeesc = new Array();
+        var ODPeesc = new Array();
+        var ODCONSIDERADA = new Array()
+
+        var validadortrab = {}
+        var validadorpetrab = {}
+
+        var validadoresc = {}
+        var validadorpeesc = {}
+
+        var tamanhoodbiketrab = 0;
+        var tamanhoodpetrab = 0;
+        var tamanhoodbikeesc = 0;
+        var tamanhoodpeesc = 0;
+        var tamanhoconsiderado = 0;
+
+        var dicionario = new Map();
         //xmlhttp.open("GET", "OD/arq.csv", true);
         //xmlhttp.send();
         var odcarregado = 0
@@ -57,49 +74,255 @@
 
         $(document).ready(function() {
         // AJAX in the data file
-            $.ajax({
-                type: "GET",
-                url: "arquivos/OD/arq.csv",
-                dataType: "text",
-                success: function(data) {processData(data);}
-                });
 
-            // Let's process the data from the data file
-            function processData(data) {
-                var lines = data.split(/\r\n|\n/);
+        var string5 = "{\"MODO_TRANSP_TRAB\": \"SOMENTE BICICLETA\"}"
+        var dadosbuscabiketrab = {
+            resource_id: 'fead29a3-3719-48c4-93c2-fab63db5d12b', // the resource id
+            fields: 'MODO_TRANSP_TRAB, ZONA_RES, ZONA_TRAB, EXPANSAO',
+            q: string5,
+            limit: 100000 // get 5 results 
+        };
+        var string4 = "{\"MODO_TRANSP_TRAB\": \"SOMENTE A PE\"}"
+        var dadosbuscaapetrab = {
+            resource_id: 'fead29a3-3719-48c4-93c2-fab63db5d12b', // the resource id
+            fields: 'MODO_TRANSP_TRAB, ZONA_RES, ZONA_TRAB, EXPANSAO',
+            q: string4,
+            limit: 100000 // get 5 results 
+        };
+        $.ajax({
+            url: 'http://dados.recife.pe.gov.br/api/3/action/datastore_search',
+            data: dadosbuscaapetrab,
+            dataType: "json",
+            success: function(data) {
 
-                var origem;
-                var destino;
-                var deslocamento;
+                var pesquisaodpetrab = data.result.records
 
-                //Set up the data arrays
-                for (var j=0; j<(lines.length-1); j++) {
-                    var valores = lines[j].split(';'); // Split up the comma seperated values
-                    // We read the key,1st, 2nd and 3rd rows 
-                    origem = Number(valores[0]);
-                    destino = Number(valores[1]);
-                    deslocamento = parseFloat(valores[2].replace(",","."));
+                var tratadoodpetrab = pesquisaodpetrab.filter(function(item){
+                    //console.log(item)
+                    // Mesma zona, não deve ser contabilizado??
 
-                    var vet = [origem, destino, deslocamento]
-                    ODBike.push(vet);
+                    return item["ZONA_RES"] != 'X' && item['ZONA_TRAB'] != 'X' && item["ZONA_RES"] != item['ZONA_TRAB'];
+                })
+                tratadoodpetrab.map(function(item){
+                    var valor1 = item["ZONA_RES"]
+                    var valor2 = item["ZONA_TRAB"]
+                    var str = valor1 + "-" + valor2
+                    //console.log(str)
+                    if(validadorpetrab[str] == undefined){
+                        vet = [Number(valor1), Number(valor2), parseFloat(item["EXPANSAO"].replace(",","."))]
+                        var indiceatual = ODPetrab.length
+                        ODPetrab.push(vet);
+                        validadorpetrab[str] = indiceatual
+                    }else{
+                        index = validadorpetrab[str]
+                        ODPetrab[index][2] += parseFloat(item["EXPANSAO"].replace(",","."))
+                    }
+                    //vet = [Number(item["ZONA_RES"]), Number(item["ZONA_TRAB"]), parseFloat(item["EXPANSAO"].replace(",","."))]
+                    //ODBike.push(vet);
+                })
+                //var tamanhodoresultadoodpe = tratadoodpe.length
 
-                }
+                //console.log(ODPetrab)
 
-            tamanhoodbike = ODBike.length;
-            odcarregado = 1
-            //console.log(ODBike)
+                tamanhoodpetrab = ODPetrab.length
+                
+                
+                $.ajax({
+                    url: 'http://dados.recife.pe.gov.br/api/3/action/datastore_search',
+                    data: dadosbuscabiketrab,
+                    dataType: "json",
+                    success: function(data) {
 
-            zona = L.geoJSON(zonas, {
-                style: style,
-                onEachFeature: onEachFeature
-            });
-            zona.addTo(map);
+                        var pesquisaodtrab = data.result.records
 
-            // For display
-            }
+                        var tratadotrab = pesquisaodtrab.filter(function(item){
+                            //console.log(item)
+                            // Mesma zona, não deve ser contabilizado??
+
+                            return item["ZONA_RES"] != 'X' && item['ZONA_TRAB'] != 'X' && item["ZONA_RES"] != item['ZONA_TRAB'];
+                        })
+                        tratadotrab.map(function(item){
+                            var valor1 = item["ZONA_RES"]
+                            var valor2 = item["ZONA_TRAB"]
+                            var str = valor1 + "-" + valor2
+                            //console.log(str)
+                            if(validadortrab[str] == undefined){
+                                vet = [Number(valor1), Number(valor2), parseFloat(item["EXPANSAO"].replace(",","."))]
+                                var indiceatual = ODBiketrab.length
+                                ODBiketrab.push(vet);
+                                validadortrab[str] = indiceatual
+                            }else{
+                                index = validadortrab[str]
+                                ODBiketrab[index][2] += parseFloat(item["EXPANSAO"].replace(",","."))
+                            }
+                            //vet = [Number(item["ZONA_RES"]), Number(item["ZONA_TRAB"]), parseFloat(item["EXPANSAO"].replace(",","."))]
+                            //ODBike.push(vet);
+                        })
+                        //var tamanhodoresultado = tratado.length
+
+                        //console.log(ODBiketrab)
+
+                        tamanhoodbiketrab = ODBiketrab.length
+                        tamanhoconsiderado = tamanhoodbiketrab
+                        ODCONSIDERADA = ODBiketrab
+
+
+                        // ===============================sdads==============================dsdsa ===========================///
+
+                        //0230-23293920392
+
+                        var string3 = "{\"MODO_TRANSP_AULA\": \"SOMENTE BICICLETA\"}"
+                        var dadosbuscabikeesc = {
+                            resource_id: 'fead29a3-3719-48c4-93c2-fab63db5d12b', // the resource id
+                            fields: 'MODO_TRANSP_AULA, ZONA_RES, ZONA_EDU, EXPANSAO',
+                            q: string3,
+                            limit: 100000 // get 5 results 
+                        };
+                        var string2 = "{\"MODO_TRANSP_AULA\": \"SOMENTE A PE\"}"
+                        var dadosbuscaapeesc = {
+                            resource_id: 'fead29a3-3719-48c4-93c2-fab63db5d12b', // the resource id
+                            fields: 'MODO_TRANSP_AULA, ZONA_RES, ZONA_EDU, EXPANSAO',
+                            q: string2,
+                            limit: 100000 // get 5 results 
+                        };
+                        $.ajax({
+                            url: 'http://dados.recife.pe.gov.br/api/3/action/datastore_search',
+                            data: dadosbuscaapeesc,
+                            dataType: "json",
+                            success: function(data) {
+                
+                                var pesquisaodpeesc = data.result.records
+                
+                                var tratadoodpeesc = pesquisaodpeesc.filter(function(item){
+                                    //console.log(item)
+                                    // Mesma zona, não deve ser contabilizado??
+                
+                                    return item["ZONA_RES"] != 'X' && item['ZONA_TRAB'] != 'X' && item["ZONA_RES"] != item['ZONA_TRAB'];
+                                })
+                                tratadoodpeesc.map(function(item){
+                                    var valor1 = item["ZONA_RES"]
+                                    var valor2 = item["ZONA_TRAB"]
+                                    var str = valor1 + "-" + valor2
+                                    //console.log(str)
+                                    if(validadorpeesc[str] == undefined){
+                                        vet = [Number(valor1), Number(valor2), parseFloat(item["EXPANSAO"].replace(",","."))]
+                                        var indiceatual = ODPeesc.length
+                                        ODPeesc.push(vet);
+                                        validadorpeesc[str] = indiceatual
+                                    }else{
+                                        index = validadorpeesc[str]
+                                        ODPeesc[index][2] += parseFloat(item["EXPANSAO"].replace(",","."))
+                                    }
+                                    //vet = [Number(item["ZONA_RES"]), Number(item["ZONA_TRAB"]), parseFloat(item["EXPANSAO"].replace(",","."))]
+                                    //ODBike.push(vet);
+                                })
+                                //var tamanhodoresultadoodpe = tratadoodpe.length
+                
+                                //console.log(ODPeesc)
+                
+                                tamanhoodpeesc = ODPeesc.length
+                        
+                                
+                                $.ajax({
+                                    url: 'http://dados.recife.pe.gov.br/api/3/action/datastore_search',
+                                    data: dadosbuscabikeesc,
+                                    dataType: "json",
+                                    success: function(data) {
+                
+                                        var pesquisaodesc = data.result.records
+                
+                                        var tratadoesc = pesquisaodesc.filter(function(item){
+                                            //console.log(item)
+                                            // Mesma zona, não deve ser contabilizado??
+                
+                                            return item["ZONA_RES"] != 'X' && item['ZONA_TRAB'] != 'X' && item["ZONA_RES"] != item['ZONA_TRAB'];
+                                        })
+                                        tratadoesc.map(function(item){
+                                            var valor1 = item["ZONA_RES"]
+                                            var valor2 = item["ZONA_TRAB"]
+                                            var str = valor1 + "-" + valor2
+                                            //console.log(str)
+                                            if(validadoresc[str] == undefined){
+                                                vet = [Number(valor1), Number(valor2), parseFloat(item["EXPANSAO"].replace(",","."))]
+                                                var indiceatual = ODBikeesc.length
+                                                ODBikeesc.push(vet);
+                                                validadoresc[str] = indiceatual
+                                            }else{
+                                                index = validadoresc[str]
+                                                ODBikeesc[index][2] += parseFloat(item["EXPANSAO"].replace(",","."))
+                                            }
+                                            //vet = [Number(item["ZONA_RES"]), Number(item["ZONA_TRAB"]), parseFloat(item["EXPANSAO"].replace(",","."))]
+                                            //ODBike.push(vet);
+                                        })
+                                        //var tamanhodoresultado = tratado.length
+                
+                                        //console.log(ODBikeesc)
+                
+                                        tamanhoodbikeesc = ODBikeesc.length
+                                        //tamanhoconsiderado = tamanhoodbike
+                                        //ODCONSIDERADA = ODBike
+
+
+                                        zona = L.geoJSON(zonas, {
+                                            style: style,
+                                            onEachFeature: onEachFeature
+                                        });
+                                        zona.addTo(map);
+
+                                        dicionario = new Map();
+                                        
+                                        var i = zona._leaflet_id-1
+                                        while (i) {
+                                            if(i==zona._leaflet_id){
+                                                //console.log('MesmoID');
+                                            }else if(zona._layers[i] == undefined){
+                                                //Não faz nada;
+                                                //console.log(emp._layers[i-1]._leaflet_id);
+                                                //console.log(itera);
+                                                break;
+                                            }else{
+                                                //Qual chave e código
+                            
+                                                dicionario.set(zona._layers[i].feature.properties.CODIGOZONA, i);
+                                                
+                                            }
+                                            i++;
+                                        }
+
+                                        var selecao = L.control({position: 'topright'});
+                                            selecao.onAdd = function (map) {
+                                            var div = L.DomUtil.create('div');
+                                            div.innerHTML = '<select id="mySelect"><option value="1">Transporte por bicicleta - Trabalho</option><option value="2">Transporte a pé - Trabalho</option><option value="3">Transporte por bicicleta - Escola</option> <option value="4">Transporte a pé - Escola</option></select>';
+                                            div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
+                                            return div;
+                                        };
+                                        selecao.addTo(map);
+
+                                        $('select').change(function(){
+                                            var x=document.getElementById("mySelect").value;
+                                            if(x != undefined){
+                                                funcaoMudaModo(x)
+                                            }
+                                        });
+                
+                                    } });
+                                } });
+
+
+                        //======================================||==============================||===============================//
+
+
+
+
+                    } });
+                } });
+
+            
+
+            
         });
 
-        var dicionario = new Map();
+        //var dicionario = new Map();
         var map = L.map('mapid').setView([-8.0525, -34.921], 13);
 
         var cartodbAttribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="https://carto.com/attribution">CARTO</a>';
@@ -121,6 +344,27 @@
         //    onEachFeature: onEachFeature
         //});
 
+        function funcaoMudaModo(entrada){
+            dicionario = new Map(); 
+            if(entrada==2){
+                ODCONSIDERADA = ODPetrab
+                tamanhoconsiderado = tamanhoodpetrab
+            }else if(entrada == 3){
+                ODCONSIDERADA = ODBikeesc
+                tamanhoconsiderado = tamanhoodbikeesc
+            }else if(entrada == 4){
+                ODCONSIDERADA = ODPeesc
+                tamanhoconsiderado = tamanhoodpeesc
+            }
+            else{
+                ODCONSIDERADA = ODBiketrab
+                tamanhoconsiderado = tamanhoodbiketrab
+            }
+
+            zona.resetStyle();
+            info.update()
+        }
+
         function getColor(d) {
             return d > 1000 ? '#800026' :
                 d > 500  ? '#BD0026' :
@@ -139,22 +383,20 @@
 
             //console.log(ODBike[k][0])
             var i = 0
-            for(;i < tamanhoodbike; i++){
-                var num  = ODBike[i][0];
+            for(;i < tamanhoconsiderado; i++){
+                var num  = ODCONSIDERADA[i][0];
                 //if(num + 50 < codzona && num+50 < 1200){
                 //    i = i + 50
                 //}
-                if(num > codzona){
-                    break;
-                }else{
-                    if(num == codzona){
-                        //console.log('achou');
-                        var tradu = ODBike[i][1];
-                        if(num != tradu){
-                            deslocs = deslocs+ODBike[i][2];
-                        }
+                
+                if(num == codzona){
+                    //console.log('achou');
+                    var tradu = ODCONSIDERADA[i][1];
+                    if(num != tradu){
+                        deslocs = deslocs+ODCONSIDERADA[i][2];
                     }
                 }
+                
             }
             dicionario.set(codzona, deslocs);
             return {
@@ -212,7 +454,7 @@
         info.update = function (props) {
             this._div.innerHTML = '<h4>Zonas e deslocamento no recife</h4>' +  (props ?
                 '<b>' + 'Zona de número: ' +props.CODIGOZONA + '</b><br />'  
-                + 'Quantidade total de deslocamentos:' + dicionario.get(props.CODIGOZONA).toFixed(3).toLocaleString('pt-BR')
+                + 'Quantidade total de deslocamentos:' + dicionario.get(props.CODIGOZONA).toLocaleString('pt-BR')
                  : 'Selecione uma zona');
         };
 

@@ -353,7 +353,7 @@ var malhaciclo;
             itera = 0;
             var i = empresul._leaflet_id-1
             var id = empresul._leaflet_id;
-            while (i < tamanhonumempresas) {
+            while (i < tamanhonumempresas + id) {
                 if(i==id){
                     //console.log('MesmoID');
                 }else if(empresul._layers[i] == undefined){
@@ -424,7 +424,7 @@ var malhaciclo;
             this._div.innerHTML = (modo ? '<h4>Selecionar<br/> modo a pé</h4>' : '<h4>Selecionar<br/> modo Bike</h4>') ;
             if(modo == true){
                 //console.log(circle)
-                tamanhodoraio = 5000
+                tamanhodoraio = 4000
                 circle.options.radius = tamanhodoraio
                 circle._mRadius = tamanhodoraio
                 circle._reset(); 

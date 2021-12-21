@@ -63,17 +63,17 @@ var trail, cic2;
     $(document).ready(function() {
         // AJAX in the data file
         
-    var string3 = "{\"MODO_TRANSP_TRAB\": \"SOMENTE BICICLETA\"}"
+    var string3 = "{\"MODO_TRANSP_AULA\": \"SOMENTE BICICLETA\"}"
     var dadosbuscabike = {
         resource_id: 'fead29a3-3719-48c4-93c2-fab63db5d12b', // the resource id
-        fields: 'MODO_TRANSP_TRAB, ZONA_RES, ZONA_TRAB, EXPANSAO',
+        fields: 'MODO_TRANSP_AULA, ZONA_RES, ZONA_EDU, EXPANSAO',
         q: string3,
         limit: 100000 // get 5 results 
     };
-    var string2 = "{\"MODO_TRANSP_TRAB\": \"SOMENTE A PE\"}"
+    var string2 = "{\"MODO_TRANSP_AULA\": \"SOMENTE A PE\"}"
     var dadosbuscaape = {
         resource_id: 'fead29a3-3719-48c4-93c2-fab63db5d12b', // the resource id
-        fields: 'MODO_TRANSP_TRAB, ZONA_RES, ZONA_TRAB, EXPANSAO',
+        fields: 'MODO_TRANSP_AULA, ZONA_RES, ZONA_EDU, EXPANSAO',
         q: string2,
         limit: 100000 // get 5 results 
     };
@@ -89,11 +89,11 @@ var trail, cic2;
                 //console.log(item)
                 // Mesma zona, não deve ser contabilizado??
 
-                return item["ZONA_RES"] != 'X' && item['ZONA_TRAB'] != 'X' && item["ZONA_RES"] != item['ZONA_TRAB'];
+                return item["ZONA_RES"] != 'X' && item['ZONA_EDU'] != 'X' && item["ZONA_RES"] != item['ZONA_EDU'];
             })
             tratadoodpe.map(function(item){
                 var valor1 = item["ZONA_RES"]
-                var valor2 = item["ZONA_TRAB"]
+                var valor2 = item["ZONA_EDU"]
                 var str = valor1 + "-" + valor2
                 //console.log(str)
                 if(validadorpe[str] == undefined){
@@ -127,11 +127,11 @@ var trail, cic2;
                         //console.log(item)
                         // Mesma zona, não deve ser contabilizado??
 
-                        return item["ZONA_RES"] != 'X' && item['ZONA_TRAB'] != 'X' && item["ZONA_RES"] != item['ZONA_TRAB'];
+                        return item["ZONA_RES"] != 'X' && item['ZONA_EDU'] != 'X' && item["ZONA_RES"] != item['ZONA_EDU'];
                     })
                     tratado.map(function(item){
                         var valor1 = item["ZONA_RES"]
-                        var valor2 = item["ZONA_TRAB"]
+                        var valor2 = item["ZONA_EDU"]
                         var str = valor1 + "-" + valor2
                         //console.log(str)
                         if(validador[str] == undefined){

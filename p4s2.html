@@ -2,28 +2,29 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
     crossorigin=""/>
+    
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
     integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
     crossorigin=""></script>
     <script src="https://unpkg.com/esri-leaflet@2.5.0/dist/esri-leaflet.js"
     integrity="sha512-ucw7Grpc+iEQZa711gcjgMBnmd9qju1CICsRaryvX7HJklK0pGl/prxKvtHwpgm5ZHdvAil7YPxI1oWPOWK3UQ=="
     crossorigin=""></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
-    <link rel="stylesheet" href="dist/spin.css" >
     
-    <script src="dist/spin.min.js"></script>
-    <script src="dist/leaflet.spin.min.js"></script>
-
+    <script src="arquivos/zonas.geojson"></script>
     <link rel="stylesheet" href="codigo/stylemapas.css" >
+    <!--[if IE]>
+    <script type="text/javascript" src="lib/jszip-utils-ie.js"></script>
+    <![endif]-->
 
-    <title>Hacker Cidadão - Equipe 9</title>
+    <title>Hacker Cidaddão - Equipe 9</title>
     <!-- Make sure you put this AFTER Leaflet's CSS -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         .caixa {
             border-width:1px;
@@ -36,33 +37,34 @@
             /*background-image: -webkit-linear-gradient(top, #d2d4da, #200B66);
             background-image:         linear-gradient(to bottom, #d2d4da, #200B66);*/
             /*opacity: 0.8;*/
+            
             width: 100%;
             display: flex;
 		    flex-direction: column;
-            
         }
         .caixinha {
             /*text-align: center;*/
             border-width:1px;
             border-style:double;
-            background-color: #f8b0b0;
+            background-color: #95e6ff;
             -webkit-border-radius: 20px 0 20px 20px;
             border-radius: 20px 0 20px 20px;
             margin: 0.04% 0.02% 0.01% 0.02%;
             opacity: 1;
-            background-image: -webkit-linear-gradient(top, #f8b0b0, #ff0000); /* Chrome 10-25, iOS 5+, Safari 5.1+ */
-            background-image:         linear-gradient(to bottom, #f8b0b0, #ff0000); /* Chrome 26, Firefox 16+, IE 10+, Opera */
+            background-image: -webkit-linear-gradient(top, #cecdcd, #1a1a1a); /* Chrome 10-25, iOS 5+, Safari 5.1+ */
+            background-image:         linear-gradient(to bottom, #cecdcd, #1a1a1a); /* Chrome 26, Firefox 16+, IE 10+, Opera */
             
+            /*========>>>>>Inserido <<<<<==========*/
             float: left;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             background-size: 100% auto;
         }
         .texto {
             height: 1.7vw;
             font-size: 1.7vw;
             font-style: normal;
-            
+            /*font: 1.7vw normal, Helvetica;*/
             font-weight: bold;
             color: rgb(48, 6, 6);
             /*box-shadow: 0 0 15px rgba(0,0,0,0.2);
@@ -72,20 +74,21 @@
             padding-bottom: 0.3%;
             padding-left: 2%;
 
+            /*========>>>>>Inserido <<<<<==========*/
             float: left;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             background-size: 100% auto;
+
         }
         .descricao {
             height:40vw;
-            font-size: clamp(0.5em, 0.5em + 0.5vw, 1.2em);
-            /*font-size: 1.2vw;*/
+            font-size: clamp(0.45em, 0.45em + 0.5vw, 1.1em);
             /*box-shadow: 0 0 0 0;*/
             background-color: rgba(247, 247, 247, 0.911);
             /*margin-bottom: 0px;
             height: 100%;*/
-            border-color: rgba(219, 102, 255, 0.877);
+            border-color: rgba(12, 147, 189, 0.877);
             border-width: 2px;
             border-style: solid;
             padding-top: 0px;
@@ -93,33 +96,49 @@
             height: 546px;
             border-bottom-right-radius: 20px;
 
+            /*========>>>>>Inserido <<<<<==========*/
             float: left;
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
             background-size: 100% auto;
         }
-        /*div.caixa caixinha:hover {
-            background-color: rgb(145, 130, 209);
-        }*/
+        .botao {
+            padding: 3% 4%;
+            height: 30%;
+            width: 100%;
+            font: 14px/16px Arial, Helvetica, sans-serif;
+            background: white;
+            background: rgba(4, 0, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 11px;
+            /*line-height: 120%;
+            width: 40%;
+            color: #555;*/
+        }
+        .botao h4 {
+            margin: 0 0 5px;
+            color: rgb(255, 217, 0);
+        }
     </style>
     
   </head>
   <body>
     <!--<div class="scrollmenu">
-        <a href="#">Home</a>
-        <a href="pag2.html" >Mapa2</a>
+        <a href="home.html" id="tile1">Home</a>
+        <a href="pag2.html" id="tile2">Mapa2</a>
         <a href="pag3.html">Mapa3</a>
-        <a href="pag4-1.html">Mapa4</a>
+        <a href="#">Mapa4</a>
         <a href="pag5.html">Mapa5</a>
         <a href="#tools">Tools</a>  
     </div>-->
+    
     <div class="caixa">
         <div class="texto">
-            Número de empresas abertas por bairro.
+            Visualização dos resultados da pesquisa Origem Destino de 2018. Viagens por motivo educação.
         </div>
         <div class="caixinha">
             
-            <table width="100%" >
+            <table width="100%" padding-left="10" >
                 <tr>
         
                 <td width="70%">
@@ -131,13 +150,13 @@
                 <td width="30%" >
                     <div class="descricao">
                         <div style="margin-left: 20px; margin-right: 10px;">
-                        <h3>Descrição do Mapa</h3>
-                        <p>Este mapa mostra os bairros onde estão concentradas as empresas abertas no município! Assim, é possível entender em quais bairros há mais oportunidades de emprego.
-                            Ao passar o cursor sobre um bairro do Recife, serão exibidos dados referentes a este bairro, área em km², quantidade de empresas abertas no bairro e a densidade de empresas por km² (que é a média do número de empresas por km²).
-                            Os bairros são mostrados em uma escala de cores: quanto mais escuro o tom de vermelho, maior é o número de empresas dentro do bairro. </p>
-                        <h3>Dados abertos:</h3>
-                        <a target="_blank" href="http://dados.recife.pe.gov.br/dataset/area-urbana/resource/e43bee60-9448-4d3d-92ff-2378bc3b5b00">http://dados.recife.pe.gov.br/dataset/area-urbana/resource/e43bee60-9448-4d3d-92ff-2378bc3b5b00</a>
-                        <a target="_blank" href="http://dados.recife.pe.gov.br/dataset/empresas-da-cidade-do-recife">http://dados.recife.pe.gov.br/dataset/empresas-da-cidade-do-recife</a>
+                            <h3>Descrição do Mapa</h3>
+                            <p>Clique em uma zona de tráfego para selecioná-la e exibir o número de viagens entre ela e as demais zonas de tráfego. Quanto mais escura, maior é o número de viagens que ocorre atualmente neste par origem-destino, pelo modo de transporte selecionado, motivo educação (2018). <br/> Também é possível verificar qual rota cicloviária contempla essas zonas, no menu de camadas do mapa. </p>
+                            <h5>Modo Origem:</h5><p>A zona clicada será a de origem, e sobrepondo o cursor do mouse sobre outra zona, será mostrado a quantidade de deslocamentos nesse par Origem-Destino.</p>
+                            <h5>Modo Destino:</h5>
+                            <p>A zona clicada será a de destino, e sobrepondo o cursor do mouse sobre outra zona, será mostrado a quantidade de deslocamentos nesse par Origem-Destino.</p>
+                            <h3>Dados abertos:</h3>
+                            <a target="_blank" href="http://dados.recife.pe.gov.br/dataset/pesquisa-origemdestino-metropolitana-2018">http://dados.recife.pe.gov.br/dataset/pesquisa-origemdestino-metropolitana-2018</a>
                         </div>
                     </div>
                     
@@ -147,6 +166,8 @@
             </table>
         </div>    
     </div>
-    <script src="codigo/p1.js"></script>
+
+    <!--<p>Resize the browser window to see the effect.</p>-->
+    <script src="codigo/p4s2.js"></script>
   </body>
 </html>

@@ -38,6 +38,9 @@
             background-image:         linear-gradient(to bottom, #d2d4da, #200B66);*/
             /*opacity: 0.8;*/
             
+            width: 100%;
+            display: flex;
+		    flex-direction: column;
         }
         .caixinha {
             /*text-align: center;*/
@@ -50,6 +53,12 @@
             opacity: 1;
             background-image: -webkit-linear-gradient(top, #95e6ff, #200B66); /* Chrome 10-25, iOS 5+, Safari 5.1+ */
             background-image:         linear-gradient(to bottom, #95e6ff, #200B66); /* Chrome 26, Firefox 16+, IE 10+, Opera */
+            
+            /*========>>>>>Inserido <<<<<==========*/
+            float: left;
+            display: flex;
+            flex-direction: column;
+            background-size: 100% auto;
         }
         .texto {
             height: 1.7vw;
@@ -65,21 +74,16 @@
             padding-bottom: 0.3%;
             padding-left: 2%;
 
-        }
-        .textopequeno {
-            font-size: 11px;
-            color: rgb(48, 6, 6);
-            /*box-shadow: 0 0 15px rgba(0,0,0,0.2);
-            margin-bottom: 0px;
-            padding-top: 0px;*/
-            padding-top: 0.3%;
-            padding-bottom: 1%;
-            padding-left: 2%;
+            /*========>>>>>Inserido <<<<<==========*/
+            float: left;
+            display: flex;
+            flex-direction: column;
+            background-size: 100% auto;
 
         }
         .descricao {
             height:40vw;
-            font-size: 14.4px;
+            font-size: clamp(0.45em, 0.45em + 0.5vw, 1.1em);
             /*box-shadow: 0 0 0 0;*/
             background-color: rgba(247, 247, 247, 0.911);
             /*margin-bottom: 0px;
@@ -91,6 +95,12 @@
             /*border-bottom: px;*/
             height: 546px;
             border-bottom-right-radius: 20px;
+
+            /*========>>>>>Inserido <<<<<==========*/
+            float: left;
+            display: flex;
+            flex-direction: column;
+            background-size: 100% auto;
         }
         .botao {
             padding: 3% 4%;
@@ -124,7 +134,7 @@
     
     <div class="caixa">
         <div class="texto">
-            Visualização dos resultados da pesquisa Origem Destino de 2018. Viagens por modo bicicleta por motivo trabalho.
+            Visualização dos resultados da pesquisa Origem Destino de 2018. Viagens por motivo trabalho.
         </div>
         <div class="caixinha">
             
@@ -141,7 +151,7 @@
                     <div class="descricao">
                         <div style="margin-left: 20px; margin-right: 10px;">
                             <h3>Descrição do Mapa</h3>
-                            <p>Clique em uma zona de tráfego para selecioná-la e exibir o número de viagens entre ela e as demais zonas de tráfego. Quanto mais escura, maior é o número de viagens que ocorre atualmente neste par origem-destino, por modo bicicleta, motivo trabalho (2018). <br/> Também é possível verificar qual rota cicloviária contempla essas zonas, no menu de camadas do mapa. </p>
+                            <p>Clique em uma zona de tráfego para selecioná-la e exibir o número de viagens entre ela e as demais zonas de tráfego. Quanto mais escura, maior é o número de viagens que ocorre atualmente neste par origem-destino, pelo modo de transporte selecionado, motivo trabalho (2018). <br/> Também é possível verificar qual rota cicloviária contempla essas zonas, no menu de camadas do mapa. </p>
                             <h5>Modo Origem:</h5><p>A zona clicada será a de origem, e sobrepondo o cursor do mouse sobre outra zona, será mostrado a quantidade de deslocamentos nesse par Origem-Destino.</p>
                             <h5>Modo Destino:</h5>
                             <p>A zona clicada será a de destino, e sobrepondo o cursor do mouse sobre outra zona, será mostrado a quantidade de deslocamentos nesse par Origem-Destino.</p>
