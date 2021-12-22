@@ -170,16 +170,7 @@ var bairroEquipsaude = {}
 var bairroEscolasmuni = {}
 $.support.cors = true;
 
-$.getJSON("../arquivos/arqbairros.json", function(data){
-    //console.log(data)
-    var superHeroes = data;
-    bairrosEstatis = superHeroes["bairros"];
-    //console.log(bairrosEstatis)
-    //console.log(data)
 
-    for(var i = 0; i < 94; i++){
-        TradutorBairroArea[bairrosEstatis[i].CBAIRRCODI] = bairrosEstatis[i].Areakm2;                    
-    }
 
     $.getJSON(urlBairrosGeoJSON, function(data) {
         //console.log(data);
@@ -476,7 +467,7 @@ $.getJSON("../arquivos/arqbairros.json", function(data){
         //map.spin(false);
         //funcaoEmpresas(bairro2);
     });
-});
+
 /*function funcaoEmpresas(codigo, lck){
     $(document).ready(function() {
 

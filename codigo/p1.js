@@ -25,60 +25,8 @@ var bairroareakm = [
     [833,  0.796], [841,  0.462], [850,  2.419], [868,  2.58],  [876,  4.361], [884,  5.51], [892,  1.041],[906,  0.632],[914,  0.139],[922,  0.572],
     [930,  0.188], [949,  0.306], [809,  0.603] ]
 
-console.log(bairroareakm)
+//console.log(bairroareakm)
 
-/*$.get("../arquivos/arqbairros.json", function(data){
-    //console.log(data)
-    var superHeroes = data;
-    bairrosEstatis = superHeroes["bairros"];
-    //console.log(data)
-
-    for(var i = 0; i < 94; i++){
-        TradutorBairroArea[bairrosEstatis[i].CBAIRRCODI] = bairrosEstatis[i].Areakm2;                    
-    }
-});*/
-
-for(var i = 0; i < 94; i++){
-    TradutorBairroArea[bairroareakm[i][0]] = bairroareakm[i][1];                    
-}
-
-/*$.ajax({
-    type: "GET",
-    url: 'arquivos/arqbairros.json',
-    dataType: 'json'
-}).done(function (data) {
-    console.log(data)
-    var superHeroesText = arqbairros; // get the string from the response
-    var superHeroes = JSON.parse(superHeroesText); // convert it to an object
-    //var linhas = superHeroesText.split(/\r\n|\n/);
-    //var abc = superHeroesText.split(",{")
-    bairrosEstatis = superHeroes["bairros"];
-    console.log(data)
-
-    for(var i = 0; i < 94; i++){
-        TradutorBairroArea[bairrosEstatis[i].CBAIRRCODI] = bairrosEstatis[i].Areakm2;                    
-    }
-})*/
-
-/*var requestURL = 'arquivos/arqbairros.json';
-var request = new XMLHttpRequest();
-request.open('GET', requestURL);
-request.responseType = 'text'; // now we're getting a string!
-request.send();
-
-request.onload = function() {
-    console.log(request.response)
-    var superHeroesText = request.response; // get the string from the response
-    var superHeroes = JSON.parse(superHeroesText); // convert it to an object
-    //var linhas = superHeroesText.split(/\r\n|\n/);
-    //var abc = superHeroesText.split(",{")
-    bairrosEstatis = superHeroes["bairros"];
-
-    for(var i = 0; i < 94; i++){
-        TradutorBairroArea[bairrosEstatis[i].CBAIRRCODI] = bairrosEstatis[i].Areakm2;                    
-    }
-    //console.log(superHeroes);
-}*/
 
 var urlEmpresasCSV = {
     resource_id: 'e7beb70e-6298-43b0-9917-19c1458e924c' // the resource id
@@ -88,6 +36,10 @@ var urlEmpresasCSV = {
 var bairro;
 $.support.cors = true;
 $.getJSON(urlBairrosGeoJSON, function(data) {
+
+    for(var i = 0; i < 94; i++){
+        TradutorBairroArea[bairroareakm[i][0]] = bairroareakm[i][1];                    
+    }
     //console.log(data);
     var bairro2 = L.geoJson(data);
     //console.log(bairro2);
@@ -97,6 +49,7 @@ $.getJSON(urlBairrosGeoJSON, function(data) {
     var tam = data.features.length;
     var desblock = 0;
     for(var j = 0; j < tam; j++){
+        //console.log(j)
         if(j == tam-1){
             desblock = 1;
         }
@@ -109,8 +62,15 @@ function funcaoEmpresas(codigo, lck){
     $(document).ready(function() {
         // AJAX in the data file
         var string = '{"cod_bairro":' + codigo + '}';
+        /*var str = codigo.toString()
+        var str2 = str + '\ "'
+        var string2 = "{\"cod_bairro\": \"" + str2 + "}"
+        var string3 = "{\"MODO_TRANSP_TRAB\": \"SOMENTE A PE\"}"
+        console.log(string2)
+        console.log(string3)*/
         urlEmpresasCSV = {
             resource_id: 'e7beb70e-6298-43b0-9917-19c1458e924c', // the resource id
+            fields: 'cod_bairro, nome_bairro',
             limit: 1, // get 5 results
             filters: string // query for 'jones'
         };
@@ -120,7 +80,9 @@ function funcaoEmpresas(codigo, lck){
             data: urlEmpresasCSV,
             dataType: "json",
             success: function(data) {
+                //console.log(data)
                 total = data.result.total;
+                //console.log(total)
                 bairroEmpresas[codigo] = total;
                 if(lck == 1){
                     $.getJSON(urlBairrosGeoJSON, function(data) {
@@ -247,6 +209,7 @@ function calculaArea(codigo){
 
 function calculaDensidade(codigo){
     var valor = bairroEmpresas[codigo];
+    //console.log(bairroEmpresas[codigo])
     var area = TradutorBairroArea[codigo];
     if(valor != undefined && area != undefined){
         return valor/area;
