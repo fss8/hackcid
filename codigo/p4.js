@@ -1,5 +1,7 @@
 var zona; var dicionario; var zonaclicada = 0;
 var trail, cic2;
+var bairrson = false
+var bairros;
         var ODBike, ODPe;
         var mododestino = false;
         var validador = {}
@@ -37,18 +39,7 @@ var trail, cic2;
                     dashArray: '12 8 12',
                 });
             
-                var baselayers = {
-                    //'Zonas do Recife': zona,
-                    //'Faixa Azul - ônibus': faixbus
-                };
-                var overlays = {
-                    'Rede Cicloviária': trail,
-                    'Ciclovias operacionais': cic2
-                    //'Rotas a implementar - PDC': aimplementar,
-                    //'Rotas a implementar - Complementar': aimplementar2
-                };
-                L.control.layers(baselayers,overlays).addTo(map);
-
+                
                 });
             }
         });
@@ -155,49 +146,130 @@ var trail, cic2;
                     ODCONSIDERADA = ODBike
                 
                     //processData(tratado, tamanhodoresultado);
-                
-                    zona = L.geoJSON(zonas, {
-                        style: style,
-                        onEachFeature: onEachFeature
-                    });
-                    zona.addTo(map);
-        
-                    dicionario = new Map();
-                    //console.log(zona._leaflet_id);
-                    //console.log(zona);
-                    var i = zona._leaflet_id-1
-                    while (i) {
-                        if(i==zona._leaflet_id){
-                            //console.log('MesmoID');
-                        }else if(zona._layers[i] == undefined){
-                            //Não faz nada;
-                            //console.log(emp._layers[i-1]._leaflet_id);
-                            //console.log(itera);
-                            break;
-                        }else{
-                            //Qual chave e código
-        
-                            dicionario.set(zona._layers[i].feature.properties.CODIGOZONA, i);
+                    var urlZonasGeoJSON = "../arquivos/zonas2.geojson";
+                    var urlBairrosGeoJSON = "http://dados.recife.pe.gov.br/dataset/c1f100f0-f56f-4dd4-9dcc-1aa4da28798a/resource/e43bee60-9448-4d3d-92ff-2378bc3b5b00/download/bairros.geojson";
+
+                    $.support.cors = true;
+
+                    $.getJSON(urlBairrosGeoJSON, function(data) {
+                        //console.log(data);
+                        var dadosbairros = data
+                        
+                        $.getJSON(urlZonasGeoJSON, function(data) {
+
+                        
+                            var zonastrafego = data
+                            //console.log(zonastrafego);
+                            //var bairro2 = L.geoJson(data);
+                            //var zonas4 = zonas
+                            //console.log(zonas4)
+                            zona = L.geoJSON(zonastrafego, {
+                                style: style,
+                                onEachFeature: onEachFeature
+                            });
+                            //zona.addTo(map);
+
+                            bairros = L.geoJson(dadosbairros, {
+                                style: {color: '#000020',
+                                weight: 1.2,
+                                opacity: 0.6, },
+                                onEachFeature: onEachFeature2
+                            })
+                            //bairros.addTo(map)
+                            zona.addTo(map);
+
+                            /*var layergroup3 = L.layerGroup([bairros])
+                            //layergroup3.addTo(map)
+    
+                            var layergroup = L.layerGroup([zona, bairros]);
+                            //layergroup.addTo(map)
+                            var layergroup2 = L.layerGroup([zona])*/
+                            //var layergroup3 = L.layerGroup([bairros])
+                            //console.log(layergroup)
+                            var baselayers = {
+                                //
+                            };
+                            var overlays = {
+                                'Rede Cicloviária': trail,
+                                'Ciclovias operacionais': cic2
+                                //'Bairros': bairros,
+                                //'Zonas': zona
+                                //'Rotas a implementar - PDC': aimplementar,
+                                //'Rotas a implementar - Complementar': aimplementar2
+                            };
+
+                            L.control.layers(baselayers,overlays).addTo(map);
                             
-                        }
-                        i++;
-                    }
+                            var command = L.control({position: 'topright'});
+                            //var command2 = L.control({position: 'topright'});
 
-                    var selecao = L.control({position: 'topright'});
-                        selecao.onAdd = function (map) {
-                        var div = L.DomUtil.create('div');
-                        div.innerHTML = '<select id="mySelect"><option value="1">Transporte por Bicicleta</option><option value="2">Transporte a pé</option></select>';
-                        div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
-                        return div;
-                    };
-                    selecao.addTo(map);
+                            command.onAdd = function (map) {
+                                var div = L.DomUtil.create('div');
 
-                    $('select').change(function(){
-                        var x=document.getElementById("mySelect").value;
-                        if(x != undefined){
-                            funcaoMudaModo(x)
-                        }
+                                div.innerHTML = '<div class="bodycheckbox"><label class="container">Mostrar Bairros<input id="command" type="checkbox" class="inputclass"/><span class="checkmark"></span></label></div>';
+                                                    
+                                return div;
+                            };
+                            command.addTo(map);
+                                                // add the event handler
+                            function handleCommand() {
+                                bairrson = !bairrson
+                                if(bairrson == true){
+                                    bairros.addTo(map)
+                                    info2.addTo(map)
+                                }else{
+                                    map.removeLayer(bairros)
+                                    info2.remove(map)
+                                }
+                                //remove do mapa
+                            }
+                            document.getElementById ("command").addEventListener ("click", handleCommand, false);
+                                                
+                            //console.log(L.control)
+                            //baselayers['Zonas e Bairros'].addTo(map)
+                            
+                
+                            dicionario = new Map();
+                            //console.log(zona._leaflet_id);
+                            //console.log(zona);
+                            var i = zona._leaflet_id-1
+                            while (i) {
+                                if(i==zona._leaflet_id){
+                                    //console.log('MesmoID');
+                                }else if(zona._layers[i] == undefined){
+                                    //Não faz nada;
+                                    //console.log(emp._layers[i-1]._leaflet_id);
+                                    //console.log(itera);
+                                    break;
+                                }else{
+                                    //Qual chave e código
+                
+                                    dicionario.set(zona._layers[i].feature.properties.CODIGOZONA, i);
+                                    
+                                }
+                                i++;
+                            }
+    
+                            var selecao = L.control({position: 'topright'});
+                                selecao.onAdd = function (map) {
+                                var div = L.DomUtil.create('div');
+                                div.innerHTML = '<select id="mySelect"><option value="1">Transporte por Bicicleta</option><option value="2">Transporte a pé</option></select>';
+                                div.firstChild.onmousedown = div.firstChild.ondblclick = L.DomEvent.stopPropagation;
+                                return div;
+                            };
+                            selecao.addTo(map);
+    
+                            $('select').change(function(){
+                                var x=document.getElementById("mySelect").value;
+                                if(x != undefined){
+                                    funcaoMudaModo(x)
+                                }
+                            });
+                        });
+
+
                     });
+                    
                 
                 }
             });
@@ -248,7 +320,7 @@ var trail, cic2;
                 opacity: 0.5,
                 color: 'blue',
                 dashArray: '3',
-                fillOpacity: 0.7
+                fillOpacity: 0.1
             };
         }
 
@@ -260,8 +332,7 @@ var trail, cic2;
             layer.setStyle({
                 weight: 5,
                 color: '#666',
-                dashArray: '',
-                fillOpacity: 0.7
+                dashArray: ''
             });
 
             /*if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
@@ -322,8 +393,7 @@ var trail, cic2;
                 weight: 2,
                 opacity: 0.5,
                 color: 'blue',
-                dashArray: '3',
-                fillOpacity: 0.7
+                dashArray: '3'
             })
             info.update();
         }
@@ -339,7 +409,7 @@ var trail, cic2;
                 weight: 5,
                 color: '#f00',
                 dashArray: '',
-                fillOpacity: 0.7,
+                fillOpacity: 0.4,
                 fillColor:'#0000ff'
             })
             //Agora percorrer todas as regiões
@@ -366,6 +436,7 @@ var trail, cic2;
 
                         if(num != tradu  && zona._layers[regiao] != undefined){
                             zona._layers[regiao].options.fillColor = cor;
+                            zona._layers[regiao].options.fillOpacity = 0.5
                             //console.log(zona._layers[regiao])
                         }                    
                         zona.setStyle();
@@ -387,6 +458,7 @@ var trail, cic2;
 
                         if(dest != orig  && zona._layers[regiao] != undefined){
                             zona._layers[regiao].options.fillColor = cor;
+                            zona._layers[regiao].options.fillOpacity = 0.5
                             //console.log(zona._layers[regiao])
                         }                    
                         zona.setStyle();
@@ -405,6 +477,42 @@ var trail, cic2;
         }
 
         //zona.addTo(map);
+
+        //========================================||==============================//
+        function highlightFeature2(e) {
+            var layer = e.target;
+            
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 0.7
+            });
+        
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+        
+            info2.update(layer.feature.properties);
+        }
+        
+        function resetHighlight2(e) {
+            bairros.resetStyle(e.target);
+            info2.update();
+        }
+        
+        function zoomToFeature2(e) {
+            map.fitBounds(e.target.getBounds());
+        }
+        
+        function onEachFeature2(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature2,
+                mouseout: resetHighlight2,
+                click: zoomToFeature2
+            });
+            //console.log(layer);
+        }
 
         function funcaoMudaModo(entrada){
             if(entrada==2){
@@ -429,7 +537,7 @@ var trail, cic2;
         info.update = function (props) {
             this._div.innerHTML = '<h4>Deslocamento entre zonas de tráfego no recife</h4>' +  (props ?
                 '<b>' + 'Zona de número: ' +props.CODIGOZONA + ((zonaclicada!=0) ? (mododestino ? " (Origem)" : " (Destino)") 
-                    +'</b><br />' + 'Zona de tráfego selecionada: ' + zonaclicada + (mododestino ? " (Destino)" : " (Origem)") + 
+                    +'</b><br />' + 'Zona de tráfego selecionada: ' + zonaclicada + (mododestino ? " (Destino)" : " (Origem)") + ' [cor azul]' + 
                 (zonaclicada!=props.CODIGOZONA ? '<br/>' + (desloc!=-1 ? 'Número de viagens: ' + desloc.toLocaleString('pt-BR') : 
                 'Não foi registrado deslocamento') : '<br/> Mesma Zona') : (mododestino ? " (Destino)" : " (Origem)") +'</b><br />' + 
                 'Clique em uma zona') + '</sup>' : 'Selecione uma zona');
@@ -437,9 +545,26 @@ var trail, cic2;
 
         info.addTo(map);
 
+        var info2 = L.control({position: 'topleft'});
+        info2.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+        
+        info2.update = function (props) {
+            this._div.innerHTML = '<h4>Bairro do Recife</h4>' +  (props ?
+                '<b>' + props.bairro_nome + '</b><br />' +
+                ' ' 
+                : 'Selecione um bairro');
+        };
+        
+        //emp.addTo(map);
+        //info2.addTo(map);
+
         var botao = L.control({position: 'bottomleft'});
         botao.onAdd = function (map) {
-            this._div = this._createButton('<h4>Modo<br/>Destino</h4>', 'Botaozin2', this._clicar)// create a div with a class "info"
+            this._div = this._createButton('<h4>Ir para<br/>Modo Destino</h4>', 'Botaozin2', this._clicar)// create a div with a class "info"
             //this.update();
             //this.onclick();
             return this._div;
@@ -470,7 +595,7 @@ var trail, cic2;
         }
 
         botao.update = function(modo) {
-            this._div.innerHTML = (modo ? '<h4>Modo<br/> Origem</h4>' : '<h4>Modo<br/>Destino</h4>') ;
+            this._div.innerHTML = (modo ? '<h4>Ir para<br/>Modo Origem</h4>' : '<h4>Ir para<br/>Modo Destino</h4>') ;
             if(modo == true){
                 zonaclicada = 0
                 zona.resetStyle();

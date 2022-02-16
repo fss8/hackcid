@@ -1,6 +1,7 @@
 
 
         var trail, cic2;
+        var bairrson = false
 
         var ODBiketrab = new Array();
         var ODPetrab = new Array();
@@ -55,18 +56,6 @@
                     opacity: 1,
                     dashArray: '12 8 12',
                 });
-            
-                var baselayers = {
-                    //'Zonas do Recife': zona,
-                    //'Faixa Azul - ônibus': faixbus
-                };
-                var overlays = {
-                    'Rede Cicloviária': trail,
-                    'Ciclovias operacionais': cic2
-                    //'Rotas a implementar - PDC': aimplementar,
-                    //'Rotas a implementar - Complementar': aimplementar2
-                };
-                L.control.layers(baselayers,overlays).addTo(map);
 
                 });
             }
@@ -263,11 +252,73 @@
                                         //ODCONSIDERADA = ODBike
 
 
-                                        zona = L.geoJSON(zonas, {
+                                var urlZonasGeoJSON = "../arquivos/zonas2.geojson";
+                                var urlBairrosGeoJSON = "http://dados.recife.pe.gov.br/dataset/c1f100f0-f56f-4dd4-9dcc-1aa4da28798a/resource/e43bee60-9448-4d3d-92ff-2378bc3b5b00/download/bairros.geojson";
+
+                                $.support.cors = true;
+
+                                $.getJSON(urlBairrosGeoJSON, function(data) {
+                                    //console.log(data);
+                                    var dadosbairros = data
+                                    
+                                    $.getJSON(urlZonasGeoJSON, function(data) {
+
+                                    
+                                        var zonastrafego = data
+                                        //console.log(zonastrafego);
+                                        //var bairro2 = L.geoJson(data);
+                                        //var zonas4 = zonas
+                                        //console.log(zonas4)
+                                        zona = L.geoJSON(zonastrafego, {
                                             style: style,
                                             onEachFeature: onEachFeature
                                         });
+                                        //zona.addTo(map);
+
+                                        bairros = L.geoJson(dadosbairros, {
+                                            style: {color: '#000020',
+                                            weight: 1.2,
+                                            opacity: 0.6, },
+                                            onEachFeature: onEachFeature2
+                                        })
+                                        //bairros.addTo(map)
                                         zona.addTo(map);
+
+                                        var baselayers = {
+                                            //
+                                        };
+                                        var overlays = {
+                                            'Rede Cicloviária': trail,
+                                            'Ciclovias operacionais': cic2
+                                        }
+
+                                        
+                                        L.control.layers(baselayers,overlays).addTo(map);
+
+                                        var command = L.control({position: 'topright'});
+                                        //var command2 = L.control({position: 'topright'});
+
+                                        command.onAdd = function (map) {
+                                            var div = L.DomUtil.create('div');
+
+                                            div.innerHTML = '<div class="bodycheckbox"><label class="container">Mostrar Bairros<input id="command" type="checkbox" class="inputclass"/><span class="checkmark"></span></label></div>';
+                                                                
+                                            return div;
+                                        };
+                                        command.addTo(map);
+                                                            // add the event handler
+                                        function handleCommand() {
+                                            bairrson = !bairrson
+                                            if(bairrson == true){
+                                                bairros.addTo(map)
+                                                info2.addTo(map)
+                                            }else{
+                                                map.removeLayer(bairros)
+                                                info2.remove(map)
+                                            }
+                                            //remove do mapa
+                                        }
+                                        document.getElementById ("command").addEventListener ("click", handleCommand, false);
 
                                         dicionario = new Map();
                                         
@@ -304,16 +355,16 @@
                                                 funcaoMudaModo(x)
                                             }
                                         });
-                
-                                    } });
-                                } });
+                                    })
+                                })
+                            } });
+                                
+                             
+                        } });
 
 
                         //======================================||==============================||===============================//
-
-
-
-
+                        
                     } });
                 } });
 
@@ -443,6 +494,43 @@
             });
             //console.log(layer);
         }
+
+        //========================================||==============================//
+        function highlightFeature2(e) {
+            var layer = e.target;
+            
+            layer.setStyle({
+                weight: 5,
+                color: '#666',
+                dashArray: '',
+                fillOpacity: 0.7
+            });
+        
+            if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
+                layer.bringToFront();
+            }
+        
+            info2.update(layer.feature.properties);
+        }
+        
+        function resetHighlight2(e) {
+            bairros.resetStyle(e.target);
+            info2.update();
+        }
+        
+        function zoomToFeature2(e) {
+            map.fitBounds(e.target.getBounds());
+        }
+        
+        function onEachFeature2(feature, layer) {
+            layer.on({
+                mouseover: highlightFeature2,
+                mouseout: resetHighlight2,
+                click: zoomToFeature2
+            });
+            //console.log(layer);
+        }
+        //================================||////=============================//
         
         var info = L.control();
         info.onAdd = function (map) {
@@ -459,6 +547,20 @@
         };
 
         info.addTo(map);
+
+        var info2 = L.control({position: 'topleft'});
+        info2.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+            this.update();
+            return this._div;
+        };
+        
+        info2.update = function (props) {
+            this._div.innerHTML = '<h4>Bairro do Recife</h4>' +  (props ?
+                '<b>' + props.bairro_nome + '</b><br />' +
+                ' ' 
+                : 'Selecione um bairro');
+        };
         
         var legend = L.control({position: 'bottomright'});
 

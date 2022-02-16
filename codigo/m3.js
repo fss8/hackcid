@@ -1,10 +1,10 @@
-var malhaciclo;
+    var malhaciclo;
         var rotaoperacional;
         var faixaazul;
         var trail, cic2, faixbus = 0;
         var modobike = false;
         var tamanhodoraio = 900;
-
+    var bairros;
         
 
         var tamanhonumempresas = 0;
@@ -36,8 +36,7 @@ var malhaciclo;
             };
     
         var muxiIcon = L.icon(muxiIconProperties);
-
-        
+            
 
         $(document).ready(function() {
 
@@ -240,8 +239,11 @@ var malhaciclo;
                                                                 command.onAdd = function (map) {
                                                                     var div = L.DomUtil.create('div');
                 
-                                                                    div.innerHTML = '<form><input id="command" type="checkbox" checked/>Parques e praças</form><form><input id="command2" type="checkbox"/>Prédios públicos</form><form><input id="command3" type="checkbox"/>Clínicas de saúde</form><form><input id="command4" type="checkbox"/>Escolas municipais</form>';
-                                                                    
+                                                                    div.innerHTML = '<div class="bodycheckbox2">'+
+                                                                    '<label class="container2"><input id="command" type="checkbox" class="inputclass2" checked/>Parques e praças<span class="checkmark2"></span></label>'+
+                                                                    '<label class="container2"><input id="command2" type="checkbox" class="inputclass2"/>Prédios públicos<span class="checkmark2"></span></label>'+
+                                                                    '<label class="container2"><input id="command3" type="checkbox" class="inputclass2"/>Clínicas de saúde<span class="checkmark2"></span></label>'+
+                                                                    '<label class="container2"><input id="command4" type="checkbox" class="inputclass2"/>Escolas municipais<span class="checkmark2"></span></label></div>';                               
                                                                     return div;
                                                                 };
                 
@@ -251,6 +253,8 @@ var malhaciclo;
                                                                 // add the event handler
                                                                 function handleCommand() {
                                                                     parkson = !parkson
+                                                                    bairros.addTo(map)
+                                                                    //bairros.remove(map)
                                                                 }
                                                                 function handleCommand2() {
                                                                     equipspublion = !equipspublion
@@ -288,6 +292,7 @@ var malhaciclo;
         
             
         });
+
         
         
         
@@ -386,64 +391,7 @@ var malhaciclo;
             shadow: '0 0 0px transparent', // Box-shadow for the lines
             zIndex: 20000});
         
-        /*var map = L.map(document.getElementById('mapid'), {
-            center: [-8.0525, -34.921],
-            zoom: 13,
-            minZoom: 2,
-            maxZoom: 17
-        });
-
-        //L.esri.basemapLayer('Streets').addTo(map);
-        var baserelief = L.tileLayer('https://tile.opentopomap.org/{z}/{x}/{y}.png', {});
-        //L.esri.basemapLayer('Streets').addTo(map);
-        baserelief.addTo(map);*/
-
-        /*var trail = L.geoJSON(malha, {
-            color: '#0f0000',
-            weight: 3,
-            opacity: 1,
-            dashArray: '12 8 12',
-        });
-        trail.addTo(map);
-
-        var cic2 = L.geoJSON(ciclo2, {
-            color: '#0000ff',
-            weight: 3,
-            opacity: 1,
-            dashArray: '12 8 12',
-        });
-
-        var faixbus = L.geoJSON(faixaazul, {
-            color: '#0000ff',
-            weight: 2,
-            opacity: 0.55,
-        });*/
-        //console.log(emp1real)
-        /*emp = L.geoJSON(emp1real, 
-                      {pointToLayer: function(feature, latlng){
-                          return L.circle(latlng, {radius: 0.0000000001});
-                      }
-                     });*/
-
-        /*var coordDIV = document.createElement('div');
-        coordDIV.id = 'mapCoordDIV';
-        coordDIV.style.position = 'absolute';
-        coordDIV.style.bottom = '1px';
-        coordDIV.style.left = '150px';
-        coordDIV.style.zIndex = '900';
-        coordDIV.style.color = '#404040';
-        coordDIV.style.fontFamily = 'Georgia';
-        coordDIV.style.fontSize = '10pt';
-        coordDIV.style.backgroundColor = '#fff';
         
-        document.getElementById('mapid').appendChild(coordDIV);
-
-        // Setup the event to capture and display mouse movements
-        map.on('mousemove', function(e){
-            var lat = e.latlng.lat.toFixed(3);
-            var lon = e.latlng.lng.toFixed(3);
-            document.getElementById('mapCoordDIV').innerHTML = lat + ' , ' + lon;
-        });*/
 
         function CalculaEmpresas(){
             itera = 0;

@@ -6,7 +6,9 @@ html, body {
 	border: solid 0.1% black; 
 	margin: 0.05% 0.08% 0.05% 0.08%; 
 	-webkit-border-radius: 20px 0 0 20px;
-	border-radius: 20px 0 0 20px;}
+	border-radius: 20px 0 0 20px;
+	
+}
 .info {
 	padding: 6px 8px;
 	font: 14px/16px Arial, Helvetica, sans-serif;
@@ -55,4 +57,118 @@ background-color: #777;
 	float: left;
 	margin-right: 5%;
 	opacity: 0.7;
+}
+.bodycheckbox{
+	font: italic;
+	padding: 1px;
+	/*background-color: #95e6ff;*/
+}
+.container{
+	display: block;
+	position: relative;
+	margin: 5px;
+	padding: 1px;
+	padding-left: 24px;
+	font-size: 14px;
+	background-color: #ffffff;
+	border-radius: 5px;
+	border-color: rgba(5, 9, 10, 0.877);
+	border-width: 1px;
+	border-style: solid;
+}
+.container:hover input ~ .checkmark{
+	background-color: rgb(129, 124, 124, 0.5);
+}
+.container input:checked ~ .checkmark{
+	background-color: #b93660;
+}
+.inputclass{
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+.container .checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+	left: 5px;
+	top: 1px;
+	width: 4px;
+	height: 8px;
+	border: solid white;
+	border-width: 0 3px 3px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+.container input:checked ~ .checkmark:after {
+	display: block;
+}
+.checkmark{
+	position: absolute;
+	top: 3px;
+	left: 4px;
+	height: 16px;
+	width: 16px;
+	background-color: rgb(211, 209, 209);
+	border-radius: 2px;
+}
+
+.bodycheckbox2{
+	font: italic;
+	padding: 1px;
+	
+	background-color: #ffffff;
+	border-radius: 5px;
+	border-color: rgba(5, 9, 10, 0.877);
+	border-width: 1px;
+	border-style: solid;
+	
+	/*background-color: #95e6ff;*/
+}
+.container2{
+	display: block;
+	position: relative;
+	margin: 4px;
+	padding: 1px;
+	padding-left: 22px;
+	font-size: 13px;
+	
+}
+.container2:hover input ~ .checkmark2{
+	background-color: rgb(129, 124, 124, 0.5);
+}
+.container2 input:checked ~ .checkmark2{
+	background-color: #b93660;
+}
+.inputclass2{
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+.container2 .checkmark2:after {
+	content: "";
+	position: absolute;
+	display: none;
+	left: 4.5px;
+	top: 2px;
+	width: 4px;
+	height: 8px;
+	border: solid white;
+	border-width: 0 3px 3px 0;
+	-webkit-transform: rotate(45deg);
+	-ms-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+.container2 input:checked ~ .checkmark2:after {
+	display: block;
+}
+.checkmark2{
+	position: absolute;
+	top: 2px;
+	left: 4px;
+	height: 16px;
+	width: 16px;
+	background-color: rgb(211, 209, 209);
+	border-radius: 2px;
 }

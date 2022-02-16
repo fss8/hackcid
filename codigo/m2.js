@@ -109,7 +109,7 @@ $(document).ready(function() {
                                                                     },
                                                                 "geometry": {
                                                                     "type":'Point',
-                                                                    "coordinates": [ estbike[j].lon , estbike[j].lat, 0.0]
+                                                                    "coordinates": [ estbike[j].longitude , estbike[j].latitude, 0.0]
                                                                     }
                                                                 }
                                                                 //console.log(bikes)

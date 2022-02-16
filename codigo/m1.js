@@ -424,7 +424,11 @@ $.support.cors = true;
                                                 command.onAdd = function (map) {
                                                     var div = L.DomUtil.create('div');
 
-                                                    div.innerHTML = '<form><input id="command" type="checkbox" checked/>Parques e praças</form><form><input id="command2" type="checkbox"/>Prédios públicos</form><form><input id="command3" type="checkbox"/>Clínicas de saúde</form><form><input id="command4" type="checkbox"/>Escolas municipais</form>';
+                                                    div.innerHTML = '<div class="bodycheckbox2">'+
+                                                    '<label class="container2"><input id="command" type="checkbox" class="inputclass2" checked/>Parques e praças<span class="checkmark2"></span></label>'+
+                                                    '<label class="container2"><input id="command2" type="checkbox" class="inputclass2"/>Prédios públicos<span class="checkmark2"></span></label>'+
+                                                    '<label class="container2"><input id="command3" type="checkbox" class="inputclass2"/>Clínicas de saúde<span class="checkmark2"></span></label>'+
+                                                    '<label class="container2"><input id="command4" type="checkbox" class="inputclass2"/>Escolas municipais<span class="checkmark2"></span></label></div>';
                                                     
                                                     return div;
                                                 };
