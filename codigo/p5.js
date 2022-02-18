@@ -252,7 +252,7 @@
                                         //ODCONSIDERADA = ODBike
 
 
-                                var urlZonasGeoJSON = "../arquivos/zonas2.geojson";
+                                var urlZonasGeoJSON = "http://dados.recife.pe.gov.br/dataset/pesquisa-origemdestino-metropolitana-2018/resource/96bc3fdd-4907-4e0a-8a10-a8b20665a457/download/zonas.geojson";
                                 var urlBairrosGeoJSON = "http://dados.recife.pe.gov.br/dataset/c1f100f0-f56f-4dd4-9dcc-1aa4da28798a/resource/e43bee60-9448-4d3d-92ff-2378bc3b5b00/download/bairros.geojson";
 
                                 $.support.cors = true;

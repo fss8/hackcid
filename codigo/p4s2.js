@@ -145,7 +145,7 @@ var trail, cic2;
                 
                     //processData(tratado, tamanhodoresultado);
                 
-                    var urlZonasGeoJSON = "../arquivos/zonas2.geojson";
+                    var urlZonasGeoJSON = "http://dados.recife.pe.gov.br/dataset/pesquisa-origemdestino-metropolitana-2018/resource/96bc3fdd-4907-4e0a-8a10-a8b20665a457/download/zonas.geojson";
                     var urlBairrosGeoJSON = "http://dados.recife.pe.gov.br/dataset/c1f100f0-f56f-4dd4-9dcc-1aa4da28798a/resource/e43bee60-9448-4d3d-92ff-2378bc3b5b00/download/bairros.geojson";
 
                     $.support.cors = true;
@@ -544,7 +544,7 @@ var trail, cic2;
 
         var botao = L.control({position: 'bottomleft'});
         botao.onAdd = function (map) {
-            this._div = this._createButton('<h4>Ir para <br/>Modo Destino</h4>', 'Botaozin2', this._clicar)// create a div with a class "info"
+            this._div = this._createButton('<h4>Ir para o<br/>Modo Destino</h4>', 'Botaozin2', this._clicar)// create a div with a class "info"
             //this.update();
             //this.onclick();
             return this._div;
@@ -575,7 +575,7 @@ var trail, cic2;
         }
 
         botao.update = function(modo) {
-            this._div.innerHTML = (modo ? '<h4>Ir para <br/>Modo Origem</h4>' : '<h4>Ir para <br/>Modo Destino</h4>') ;
+            this._div.innerHTML = (modo ? '<h4>Ir para o<br/>Modo Origem</h4>' : '<h4>Ir para o<br/>Modo Destino</h4>') ;
             if(modo == true){
                 zonaclicada = 0
                 zona.resetStyle();

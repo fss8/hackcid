@@ -1,0 +1,28 @@
+.observacao {
+	width:"100%"; 
+	height:"660vw";
+	
+	background-color: black;
+	border-radius: 16px;
+	border-color: rgb(43, 241, 25);/*coral*/
+	border-style: solid;
+	border-width: 3px;
+}
+.tomaespaco{
+	padding-bottom: 20px;
+}
+.letraum{
+	padding-top: 10px;
+	padding-left: 20px;
+	color:rgb(255, 255, 255);
+	font-size: 20px;
+	font-family: "Times New Roman", Times, serif;
+}
+.letraobs{
+	color:rgb(255, 255, 255);
+	padding: 15px;
+}
+hr {
+	border: 0;
+	border-top: 4px solid rgb(255, 165, 0);
+}
